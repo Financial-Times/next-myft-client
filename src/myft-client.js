@@ -1,4 +1,3 @@
-/* global console, fetch */
 'use strict';
 
 var session = require('next-session-client');
@@ -40,10 +39,6 @@ MyFtClient.prototype.init = function (opts) {
 
 		return session.uuid().then(function (data) {
 
-			if (!data) {
-				console.warn('No valid user found');
-				throw 'No valid user found';
-			}
 			this.userId = 'User:guid-' + data.uuid;
 
 			this.headers = {
