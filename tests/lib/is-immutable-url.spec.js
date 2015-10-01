@@ -2,7 +2,7 @@
 /*jshint expr:true*/
 'use strict';
 
-var isImmutableUrl = require('../../src/lib/is-immutable-url');
+const isImmutableUrl = require('../../src/lib/is-immutable-url');
 
 
 describe('identifying immutable URLs', function () {

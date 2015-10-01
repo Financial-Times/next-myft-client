@@ -1,6 +1,6 @@
 'use strict';
 
-var isPersonalisedUrl = require('./is-personalised-url');
+const isPersonalisedUrl = require('./is-personalised-url');
 
 module.exports = function (url) {
 	return /^\/(__)?myft\/api\//.test(url) ||

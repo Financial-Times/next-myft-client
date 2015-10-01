@@ -21,7 +21,7 @@ class MyFtApi {
 	}
 
 	fetchJson (method, endpoint, data) {
-		var options = {
+		let options = {
 			method,
 			headers: this.headers,
 			credentials: 'include'
