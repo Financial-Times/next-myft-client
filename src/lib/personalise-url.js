@@ -1,6 +1,6 @@
 'use strict';
 
-var isImmutableUrl = require('./is-immutable-url');
+const isImmutableUrl = require('./is-immutable-url');
 
 module.exports = function (url, uuid) {
 	if (isImmutableUrl(url)) {

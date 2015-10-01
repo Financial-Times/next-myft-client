@@ -2,7 +2,7 @@
 /*jshint expr:true*/
 'use strict';
 
-var isPersonalisedUrl = require('../../src/lib/is-personalised-url');
+const isPersonalisedUrl = require('../../src/lib/is-personalised-url');
 
 
 describe('identifying personalised URLs', function () {

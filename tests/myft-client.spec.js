@@ -3,10 +3,10 @@
 'use strict';
 require('isomorphic-fetch');
 
-var sinon = require('sinon');
-var session = require('next-session-client');
-var MyFtClient = require('../src/myft-client');
-var fixtures = {
+const sinon = require('sinon');
+const session = require('next-session-client');
+const MyFtClient = require('../src/myft-client');
+const fixtures = {
 	follow: require('./fixtures/follow.json'),
 	nofollow: require('./fixtures/nofollow.json'),
 	saved: require('./fixtures/saved.json')
@@ -33,7 +33,7 @@ function listenOnce(eventName, func) {
 
 describe('Initialising', function() {
 
-	var fetchStub;
+	let fetchStub;
 	beforeEach(function() {
 		fetchStub = sinon.stub(window, 'fetch');
 		fetchStub.returns(mockFetch(fixtures.follow));
@@ -54,7 +54,7 @@ describe('Initialising', function() {
 		sinon.stub(session, 'uuid', function () {
 			return Promise.resolve({uuid:'abcd'});
 		});
-		var myFtClient = new MyFtClient({
+		let myFtClient = new MyFtClient({
 			apiRoot: 'testRoot/'
 		});
 		myFtClient.init({
@@ -74,7 +74,7 @@ describe('Initialising', function() {
 		sinon.stub(session, 'uuid', function () {
 			return Promise.reject();
 		});
-		var myFtClient = new MyFtClient({
+		let myFtClient = new MyFtClient({
 			apiRoot: 'testRoot/'
 		});
 		myFtClient.init({
@@ -98,7 +98,7 @@ describe('url personalising', function () {
 		sinon.stub(session, 'uuid', function () {
 			return Promise.resolve({uuid:'abcd'});
 		});
-		var myFtClient = new MyFtClient({
+		const myFtClient = new MyFtClient({
 			apiRoot: 'testRoot/'
 		});
 
@@ -127,8 +127,8 @@ describe('url personalising', function () {
 
 describe('endpoints', function() {
 
-	var fetchStub;
-	var myFtClient;
+	let fetchStub;
+	let myFtClient;
 	beforeEach(function() {
 		document.cookie = 'FT_U=_EID=12324_PID=4011101642_TIME=%5BWed%2C+04-Mar-2015+11%3A49%3A49+GMT%5D_RI=0_I=0_';
 		fetchStub = sinon.stub(window, 'fetch');
@@ -162,14 +162,14 @@ describe('endpoints', function() {
 					expect(evt.detail.Items[0].UUID = 'people:"Basic"');
 					done();
 				});
-			});
+			}).catch(done);
 		});
 
 		it('can add a follow with stringified meta', function (done) {
 			myFtClient.init({
 			}).then(function () {
 				myFtClient.add('followed', 'fds567ksgaj=sagjfhgsy', {
-					someKey: "blah"
+					someKey: 'blah'
 				});
 				expect(fetchStub.calledWith('testRoot/user/abcd/followed/fds567ksgaj=sagjfhgsy')).to.be.true;
 				expect(fetchStub.args[1][1].method).to.equal('PUT');
@@ -179,7 +179,7 @@ describe('endpoints', function() {
 					expect(evt.detail.subject).to.equal('fds567ksgaj=sagjfhgsy');
 					done();
 				});
-			});
+			}).catch(done);
 		});
 
 		it('can assert if a topic has been followed', function (done) {
@@ -192,7 +192,7 @@ describe('endpoints', function() {
 			}).then(function(hasFollowed) {
 				expect(hasFollowed).to.be.true;
 				done();
-			});
+			}).catch(done);
 		});
 
 		it('can assert if a topic has not been followed', function (done) {
@@ -204,7 +204,7 @@ describe('endpoints', function() {
 			}).then(function(hasFollowed) {
 				expect(hasFollowed).to.be.false;
 				done();
-			});
+			}).catch(done);
 		});
 
 		it('can remove a follow', function (done) {
@@ -219,7 +219,7 @@ describe('endpoints', function() {
 					expect(evt.detail.subject).to.equal('fds567ksgaj=sagjfhgsy');
 					done();
 				});
-			});
+			}).catch(done);
 		});
 	});
 
@@ -239,7 +239,7 @@ describe('endpoints', function() {
 					expect(evt.detail.Items[0].UUID = '7be2ae5a-3aa0-11e4-bd08-00144feabdc0');
 					done();
 				});
-			});
+			}).catch(done);
 		});
 
 
@@ -247,7 +247,7 @@ describe('endpoints', function() {
 			myFtClient.init({
 			}).then(function () {
 				myFtClient.add('saved', '12345', {
-					someKey: "blah"
+					someKey: 'blah'
 				});
 
 				expect(fetchStub.calledWith('testRoot/user/abcd/saved/12345')).to.be.true;
@@ -258,7 +258,7 @@ describe('endpoints', function() {
 					expect(evt.detail.subject).to.equal('12345');
 					done();
 				});
-			});
+			}).catch(done);
 		});
 
 		it('can remove a saveForLater', function (done) {
@@ -273,7 +273,7 @@ describe('endpoints', function() {
 					expect(evt.detail.subject).to.equal('12345');
 					done();
 				});
-			});
+			}).catch(done);
 		});
 	});
 

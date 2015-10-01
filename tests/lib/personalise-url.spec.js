@@ -2,12 +2,12 @@
 /*jshint expr:true*/
 'use strict';
 
-var personaliseUrl = require('../../src/lib/personalise-url');
+const personaliseUrl = require('../../src/lib/personalise-url');
 
 describe('url personalising', function () {
 	it('should be possible to personalise a url', function () {
 
-		var testUuid = 'abcd';
+		const testUuid = 'abcd';
 
 		Promise.all([
 			personaliseUrl('/myft', testUuid),
