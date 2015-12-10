@@ -34,23 +34,29 @@ class MyFtApi {
 
 		if (method !== 'GET') {
 
-			// fiddle content length header to appease Fastly
-			if(process && process.env.NODE_ENV === 'production') {
+			//FIXME: remove content length fiddle while temporary circumnavigating myft-api cdn
+			//// fiddle content length header to appease Fastly
+			//if(process && process.env.NODE_ENV === 'production') {
+			//
+			//	// Fastly requires that empty requests have an empty object for a body and local API requires that
+			//	// they don't
+			//	options.body = JSON.stringify(data || {});
+			//
+			//	this.headers['Content-Length'] = Buffer.byteLength(options.body);
+			//
+			//} else {
+			//	options.body = data ? JSON.stringify(data) : null;
+			//}
 
-				// Fastly requires that empty requests have an empty object for a body and local API requires that
-				// they don't
-				options.body = JSON.stringify(data || {});
 
-				this.headers['Content-Length'] = Buffer.byteLength(options.body);
+			options.body = data ? JSON.stringify(data) : null;
 
-			} else {
-				options.body = data ? JSON.stringify(data) : null;
-			}
 		} else {
 
-			if(process && process.env.NODE_ENV === 'production') {
-				this.headers['Content-Length'] = '';
-			}
+			//FIXME: remove content length fiddle while temporary circumnavigating myft-api cdn
+			//if(process && process.env.NODE_ENV === 'production') {
+			//	this.headers['Content-Length'] = '';
+			//}
 
 			Object.keys(data || {}).forEach(function(key) {
 				if(queryString.length) {
