@@ -95,16 +95,16 @@ class MyFtApi {
 		return this.fetchJson('GET', `${actor}/${id}/${relationship}/${type}/${subject}`, params);
 	}
 
-	addRelationship (actor, id, relationship, type, data) {
-		return this.fetchJson('POST', `${actor}/${id}/${relationship}/${type}`, data);
+	addRelationship (actor, id, relationship, type, data, noEvent) {
+		return this.fetchJson('POST', `${actor}/${id}/${relationship}/${type}${noEvent ? '?noEvent=true' : ''}`, data);
 	}
 
 	updateRelationship (actor, id, relationship, type, subject, data) {
 		return this.fetchJson('PUT', `${actor}/${id}/${relationship}/${type}/${subject}`, data);
 	}
 
-	removeRelationship (actor, id, relationship, type, subject) {
-		return this.fetchJson('DELETE', `${actor}/${id}/${relationship}/${type}/${subject}`);
+	removeRelationship (actor, id, relationship, type, subject, noEvent) {
+		return this.fetchJson('DELETE', `${actor}/${id}/${relationship}/${type}/${subject}${noEvent ? '?noEvent=true' : ''}`);
 	}
 
 	purgeActor(actor, id) {
