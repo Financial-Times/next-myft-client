@@ -1,14 +1,15 @@
 'use strict';
 
-var isImmutableUrl = require('./is-immutable-url');
+const isImmutableUrl = require('./is-immutable-url');
+const isValidUuid = require('./is-valid-uuid');
 
 module.exports = function (url, userId) {
 	if (isImmutableUrl(url)) {
 		return url;
 	}
 
-	if(!userId || !userId.length) {
-		throw new Error('invalid user uuid: ' + userId);
+	if(!userId || !userId.length || !isValidUuid(userId)) {
+		throw new Error('Invalid user uuid: ' + userId);
 	}
 
 	return url.replace(/myft(?:\/([a-zA-z\-]*))?(\/.[^$\/])?\/?/, function ($0, $1, $2) {

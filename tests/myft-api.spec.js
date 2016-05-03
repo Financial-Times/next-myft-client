@@ -31,10 +31,10 @@ describe('url personalising', function () {
 
 	it('should be possible to personalise a url', function () {
 
-		const testUuid = 'abcd';
+		const testUuid = '3f041222-22b9-4098-b4a6-7967e48fe4f7';
 
-		expect(myFtApi.personaliseUrl('/myft', testUuid)).to.equal('/myft/abcd');
-		expect(myFtApi.personaliseUrl('/myft/3f041222-22b9-4098-b4a6-7967e48fe4f7', testUuid)).to.equal('/myft/3f041222-22b9-4098-b4a6-7967e48fe4f7');
+		expect(myFtApi.personaliseUrl('/myft', testUuid)).to.equal(`/myft/${testUuid}`);
+		expect(myFtApi.personaliseUrl(`/myft/${testUuid}`, testUuid)).to.equal(`/myft/${testUuid}`);
 	});
 });
 

@@ -48,5 +48,8 @@ describe('url personalising', function () {
 
 	it('should not be possible to personalise a with an invalid userId', function () {
 
+		const invalidUserId = '-';
+
+		expect(() => personaliseUrl(`/myft`, invalidUserId)).to.throw('Invalid user uuid: ' + invalidUserId);
 	})
 });

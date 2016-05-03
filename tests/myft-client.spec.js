@@ -11,6 +11,8 @@ const fixtures = {
 	saved: require('./fixtures/saved.json')
 };
 
+const userUuid = '989a08e5-28ff-41fb-9627-bd827694060d';
+
 function mockFetch(response, status) {
 	return new Promise(function(resolve) {
 		resolve({
@@ -54,14 +56,14 @@ describe('Initialising', function() {
 	it('fetches a guid from the session', function (done) {
 		document.cookie = 'FTSession=12345';
 		sinon.stub(session, 'uuid', function () {
-			return Promise.resolve({uuid: 'abcd'});
+			return Promise.resolve({uuid: userUuid});
 		});
 		let myFtClient = new MyFtClient({
 			apiRoot: 'testRoot/'
 		});
 		myFtClient.init()
 			.then(function () {
-				expect(myFtClient.userId).to.equal('abcd');
+				expect(myFtClient.userId).to.equal(userUuid);
 				session.uuid.restore();
 				done();
 			}).catch(done);
@@ -113,7 +115,7 @@ describe('Requesting relationships on initialisation', function () {
 		document.cookie = 'FT_U=_EID=12324_PID=4011101642_TIME=%5BWed%2C+04-Mar-2015+11%3A49%3A49+GMT%5D_RI=0_I=0_';
 		fetchStub = sinon.stub(window, 'fetch');
 		sinon.stub(session, 'uuid', function () {
-			return Promise.resolve({uuid: 'abcd'});
+			return Promise.resolve({uuid: userUuid});
 		});
 		myFtClient = new MyFtClient({
 			apiRoot: 'testRoot/'
@@ -127,11 +129,11 @@ describe('Requesting relationships on initialisation', function () {
 	});
 
 	function expectLoaded(relationship, type) {
-		expect(fetchStub.calledWith(`testRoot/abcd/${relationship}/${type}`)).to.be.true;
+		expect(fetchStub.calledWith(`testRoot/${userUuid}/${relationship}/${type}`)).to.be.true;
 	}
 
 	function expectNotLoaded(relationship, type) {
-		expect(fetchStub.calledWith(`testRoot/abcd/${relationship}/${type}`)).to.be.false;
+		expect(fetchStub.calledWith(`testRoot/${userUuid}/${relationship}/${type}`)).to.be.false;
 	}
 
 	it('should load the right stuff when initialised with defaults', function (done) {
@@ -175,7 +177,7 @@ describe('url personalising', function () {
 	it('should be possible to personalise a url', function (done) {
 		document.cookie = 'FT_U=_EID=12324_PID=4011101642_TIME=%5BWed%2C+04-Mar-2015+11%3A49%3A49+GMT%5D_RI=0_I=0_';
 		sinon.stub(session, 'uuid', function () {
-			return Promise.resolve({uuid:'abcd'});
+			return Promise.resolve({uuid:userUuid});
 		});
 		let myFtClient = new MyFtClient({
 			apiRoot: 'testRoot/'
@@ -185,12 +187,13 @@ describe('url personalising', function () {
 			myFtClient.personaliseUrl('/myft'),
 
 			// immutable URLs
-			myFtClient.personaliseUrl('/myft/3f041222-22b9-4098-b4a6-7967e48fe4f7'),
+			myFtClient.personaliseUrl(`/myft/${userUuid}`)
+
 		]).then(function (results) {
-			expect(results.shift()).to.equal('/myft/abcd');
+			expect(results.shift()).to.equal(`/myft/${userUuid}`);
 
 			// immutable URLs
-			expect(results.shift()).to.equal('/myft/3f041222-22b9-4098-b4a6-7967e48fe4f7');
+			expect(results.shift()).to.equal(`/myft/${userUuid}`);
 
 			session.uuid.restore();
 			done();
@@ -210,7 +213,7 @@ describe('endpoints', function() {
 		document.cookie = 'FT_U=_EID=12324_PID=4011101642_TIME=%5BWed%2C+04-Mar-2015+11%3A49%3A49+GMT%5D_RI=0_I=0_';
 		fetchStub = sinon.stub(window, 'fetch');
 		sinon.stub(session, 'uuid', function () {
-			return Promise.resolve({uuid:'abcd'});
+			return Promise.resolve({uuid:userUuid});
 		});
 		myFtClient = new MyFtClient({
 			apiRoot: 'testRoot/'
@@ -315,7 +318,7 @@ describe('endpoints', function() {
 			myFtClient.init([
 				{ relationship: 'followed', type: 'concept' }
 			]).then(function () {
-				expect(fetchStub.calledWith('testRoot/abcd/followed/concept')).to.be.true;
+				expect(fetchStub.calledWith(`testRoot/${userUuid}/followed/concept`)).to.be.true;
 				listenOnce('myft.user.followed.concept.load', function(evt) {
 					expect(myFtClient.loaded['followed.concept']).to.be.exist;
 					expect(evt.detail.count).to.equal(18);
@@ -356,7 +359,7 @@ describe('endpoints', function() {
 				let eventPromise = listenOnce('myft.user.followed.concept.add', evt => expect(evt.detail.subject).to.equal('fds567ksgaj=sagjfhgsy'));
 				const firstNonLoadCall = fetchStub.args[3];
 
-				expect(firstNonLoadCall[0]).to.equal('testRoot/user/abcd/followed/concept/fds567ksgaj=sagjfhgsy');
+				expect(firstNonLoadCall[0]).to.equal(`testRoot/user/${userUuid}/followed/concept/fds567ksgaj=sagjfhgsy`);
 				expect(firstNonLoadCall[1].method).to.equal('PUT');
 				expect(firstNonLoadCall[1].headers['Content-Type']).to.equal('application/json');
 				expect(firstNonLoadCall[1]['body']).to.equal('{"someKey":"blah"}');
@@ -425,18 +428,18 @@ describe('endpoints', function() {
 				let callPromise = myFtClient.remove('user', null, 'followed', 'concept', 'fds567ksgaj=sagjfhgsy');
 				let eventPromise = listenOnce('myft.user.followed.concept.remove', evt => {
 					expect(evt.detail.subject).to.equal('fds567ksgaj=sagjfhgsy');
-					expect(evt.detail.actorId).to.equal('abcd');
+					expect(evt.detail.actorId).to.equal(userUuid);
 				});
 				const firstNonLoadCall = fetchStub.args[3];
 
-				expect(firstNonLoadCall[0]).to.equal('testRoot/user/abcd/followed/concept/fds567ksgaj=sagjfhgsy');
+				expect(firstNonLoadCall[0]).to.equal(`testRoot/user/${userUuid}/followed/concept/fds567ksgaj=sagjfhgsy`);
 				expect(firstNonLoadCall[1].method).to.equal('DELETE');
 				expect(firstNonLoadCall[1].headers['Content-Type']).to.equal('application/json');
 
 				return Promise.all([callPromise, eventPromise]).then(results => {
 					let callPromiseResult = results[0];
 					expect(callPromiseResult.subject).to.equal('fds567ksgaj=sagjfhgsy');
-					expect(callPromiseResult.actorId).to.equal('abcd');
+					expect(callPromiseResult.actorId).to.equal(userUuid);
 					done();
 				});
 			})
@@ -476,7 +479,7 @@ describe('endpoints', function() {
 			myFtClient.init([
 				{ relationship: 'saved', type: 'content' }
 			]).then(function () {
-				expect(fetchStub.calledWith('testRoot/abcd/saved/content')).to.be.true;
+				expect(fetchStub.calledWith(`testRoot/${userUuid}/saved/content`)).to.be.true;
 				listenOnce('myft.user.saved.content.load', function(evt) {
 					expect(myFtClient.loaded['saved.content']).to.be.exist;
 					expect(evt.detail.count).to.equal(3);
@@ -521,7 +524,7 @@ describe('endpoints', function() {
 				});
 				const firstNonLoadCall = fetchStub.args[3];
 
-				expect(firstNonLoadCall[0]).to.equal('testRoot/user/abcd/saved/content/12345');
+				expect(firstNonLoadCall[0]).to.equal(`testRoot/user/${userUuid}/saved/content/12345`);
 				expect(firstNonLoadCall[1].method).to.equal('PUT');
 				expect(firstNonLoadCall[1].headers['Content-Type']).to.equal('application/json');
 				expect(firstNonLoadCall[1]['body']).to.equal('{"someKey":"blah"}');
@@ -544,7 +547,7 @@ describe('endpoints', function() {
 				});
 				const firstNonLoadCall = fetchStub.args[3];
 
-				expect(firstNonLoadCall[0]).to.equal('testRoot/user/abcd/saved/content/12345');
+				expect(firstNonLoadCall[0]).to.equal(`testRoot/user/${userUuid}/saved/content/12345`);
 				expect(firstNonLoadCall[1].method).to.equal('DELETE');
 				expect(firstNonLoadCall[1].headers['Content-Type']).to.equal('application/json');
 

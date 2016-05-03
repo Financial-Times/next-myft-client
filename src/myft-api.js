@@ -6,7 +6,8 @@ const lib = {
 	sanitizeData: require('./lib/sanitize-data'),
 	personaliseUrl: require('./lib/personalise-url'),
 	isPersonalisedUrl: require('./lib/is-personalised-url'),
-	isImmutableUrl: require('./lib/is-immutable-url')
+	isImmutableUrl: require('./lib/is-immutable-url'),
+	isValidUuid: require('./lib/is-valid-uuid')
 };
 
 
@@ -129,6 +130,10 @@ class MyFtApi {
 
 	isImmutableUrl(url) {
 		return lib.isImmutableUrl(url);
+	}
+
+	isValidUuid(str) {
+		return lib.isValidUuid(str);
 	}
 }
 
