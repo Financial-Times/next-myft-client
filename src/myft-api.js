@@ -31,7 +31,7 @@ class MyFtApi {
 		};
 
 		if(/undefined/.test(endpoint)) {
-			return Promise.reject('Request should contain undefined.');
+			return Promise.reject('Request must not contain undefined. Invalid path: ' + endpoint);
 		}
 
 		//Sanitize data
