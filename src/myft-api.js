@@ -22,13 +22,16 @@ class MyFtApi {
 		}, opts.headers);
 	}
 
-	fetchJson (method, endpoint, data) {
+	fetchJson (method, endpoint, data, opts) {
+		opts = opts || {};
+
 		let queryString = '';
-		let options = {
+		let options = Object.assign({
 			method,
 			headers: this.headers,
 			credentials: 'include'
-		};
+		}, opts);
+
 
 		if(/undefined/.test(endpoint)) {
 			return Promise.reject('Request should contain undefined.');
