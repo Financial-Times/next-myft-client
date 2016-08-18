@@ -94,7 +94,7 @@ class MyFtClient {
 	fetchJson (method, endpoint, data) {
 		let options = {
 			method,
-			headers: this.headers,
+			headers: Object.assign({'content-type': 'application/json; charset=utf-8'}, this.headers),
 			credentials: 'include'
 		};
 
