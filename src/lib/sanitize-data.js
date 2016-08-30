@@ -6,8 +6,8 @@ const sanitizeBoolean = (str) => {
 	return str;
 };
 
-function isPlainObject (datum) {
-	return (typeof datum === 'object' && Object.prototype.toString.call(datum) === '[object Object]');
+function isObject (datum) {
+	return (Object.prototype.toString.call(datum) === '[object Object]');
 }
 
 function findStringValues (object) {
@@ -15,7 +15,7 @@ function findStringValues (object) {
 		object.forEach(item => {
 			findStringValues(item);
 		});
-	} else if (isPlainObject(object)) {
+	} else if (isObject(object)) {
 		Object.keys(object).forEach(key => {
 			if(typeof object[key] === 'string') {
 				object[key] = sanitizeBoolean(object[key]);
@@ -23,7 +23,7 @@ function findStringValues (object) {
 				object[key].forEach(item => {
 					findStringValues(item);
 				});
-			} else if (isPlainObject(object[key])) {
+			} else if (isObject(object[key])) {
 				findStringValues(object[key]);
 			}
 		});
