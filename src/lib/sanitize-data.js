@@ -6,14 +6,34 @@ const sanitizeBoolean = (str) => {
 	return str;
 };
 
-module.exports = (data) => {
-	if(data && !Array.isArray(data)) {
-		Object.keys(data).forEach(key => {
-			if(typeof data[key] === 'string') {
-				data[key] = sanitizeBoolean(data[key]);
+function isObject (datum) {
+	return (Object.prototype.toString.call(datum) === '[object Object]');
+}
+
+function findStringValues (object) {
+	if (Array.isArray(object)) {
+		object.forEach(item => {
+			findStringValues(item);
+		});
+	} else if (isObject(object)) {
+		Object.keys(object).forEach(key => {
+			if(typeof object[key] === 'string') {
+				object[key] = sanitizeBoolean(object[key]);
+			} else if (Array.isArray(object[key])) {
+				object[key].forEach(item => {
+					findStringValues(item);
+				});
+			} else if (isObject(object[key])) {
+				findStringValues(object[key]);
 			}
 		});
-		return data;
+	}
+	return object;
+}
+
+module.exports = (data) => {
+	if (data) {
+		return findStringValues(data);
 	} else {
 		return data;
 	}
