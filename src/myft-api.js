@@ -1,8 +1,7 @@
 'use strict';
 
 /*global Buffer*/
-const fetchres = require('fetchres');
-const BlackHoleStream = require('black-hole-stream');
+const request = require('request');
 
 const lib = {
 	sanitizeData: require('./lib/sanitize-data'),
@@ -26,11 +25,10 @@ class MyFtApi {
 	fetchJson (method, endpoint, data, opts) {
 		opts = opts || {};
 
-		let queryString = '';
-		let options = Object.assign({
+		const options = Object.assign({
+			url: this.apiRoot + endpoint,
 			method,
 			headers: this.headers,
-			credentials: 'include'
 		}, opts);
 
 
@@ -61,24 +59,25 @@ class MyFtApi {
 				this.headers['Content-Length'] = 0;
 			}
 
-			Object.keys(data || {}).forEach(function (key) {
-				if(queryString.length) {
-					queryString += `&${key}=${data[key]}`;
-				} else {
-					queryString += `?${key}=${data[key]}`;
-				}
-			});
+			options.qs = data || {};
 		}
 
-		return fetch(this.apiRoot + endpoint + queryString, options)
-			.then(res => {
-				if (res.status === 404) {
-					res.body.pipe(new BlackHoleStream());
-					throw new Error('No user data exists');
+		return new Promise((resolve, reject) => {
+			request(options, (err, response, body) => {
+				if (err) {
+					return reject(err);
+				} else if (response.statusCode === 404) {
+					return reject(new Error('No user data exists'))
+				} else {
+					try {
+						const json = JSON.parse(body);
+						return resolve(json);
+					} catch (e) {
+						return reject(e);
+					}
 				}
-				return res;
-			})
-			.then(fetchres.json);
+			});
+		})
 	}
 
 	addActor (actor, data, opts) {
