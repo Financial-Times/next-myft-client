@@ -13,7 +13,8 @@ const lib = {
 };
 
 class MyFtApi {
-	constructor (opts) {
+	constructor (opts, mockDeps = {}) {
+		this.deps = Object.assign({}, { request }, mockDeps);
 		if (!opts.apiRoot) {
 			throw 'Myft API  must be constructed with an api root';
 		}
@@ -64,7 +65,7 @@ class MyFtApi {
 		}
 
 		return new Promise((resolve, reject) => {
-			request(options, (err, response, body) => {
+			this.deps.request(options, (err, response, body) => {
 				if (err) {
 					return reject(err);
 				} else if (response.statusCode === 404) {
