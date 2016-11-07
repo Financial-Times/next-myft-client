@@ -1,6 +1,7 @@
 'use strict';
 
 /*global Buffer*/
+const createError = require('http-errors');
 const request = require('request');
 
 const lib = {
@@ -68,6 +69,8 @@ class MyFtApi {
 					return reject(err);
 				} else if (response.statusCode === 404) {
 					return reject(new Error('No user data exists'))
+				} else if (response.statusCode < 200 || response.statusCode >= 300) {
+					return reject(createError(response.statusCode, body));
 				} else {
 					try {
 						const json = JSON.parse(body);
