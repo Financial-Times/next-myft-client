@@ -1,8 +1,8 @@
 'use strict';
 
 /*global Buffer*/
-const fetchres = require('fetchres');
-const BlackHoleStream = require('black-hole-stream');
+const createError = require('http-errors');
+const request = require('request');
 
 const lib = {
 	sanitizeData: require('./lib/sanitize-data'),
@@ -13,7 +13,8 @@ const lib = {
 };
 
 class MyFtApi {
-	constructor (opts) {
+	constructor (opts, mockDeps = {}) {
+		this.deps = Object.assign({}, { request }, mockDeps);
 		if (!opts.apiRoot) {
 			throw 'Myft API  must be constructed with an api root';
 		}
@@ -26,11 +27,10 @@ class MyFtApi {
 	fetchJson (method, endpoint, data, opts) {
 		opts = opts || {};
 
-		let queryString = '';
-		let options = Object.assign({
+		const options = Object.assign({
+			url: this.apiRoot + endpoint,
 			method,
 			headers: this.headers,
-			credentials: 'include'
 		}, opts);
 
 
@@ -61,24 +61,27 @@ class MyFtApi {
 				this.headers['Content-Length'] = 0;
 			}
 
-			Object.keys(data || {}).forEach(function (key) {
-				if(queryString.length) {
-					queryString += `&${key}=${data[key]}`;
-				} else {
-					queryString += `?${key}=${data[key]}`;
-				}
-			});
+			options.qs = data || {};
 		}
 
-		return fetch(this.apiRoot + endpoint + queryString, options)
-			.then(res => {
-				if (res.status === 404) {
-					res.body.pipe(new BlackHoleStream());
-					throw new Error('No user data exists');
+		return new Promise((resolve, reject) => {
+			this.deps.request(options, (err, response, body) => {
+				if (err) {
+					return reject(err);
+				} else if (response.statusCode === 404) {
+					return reject(new Error('No user data exists'))
+				} else if (response.statusCode < 200 || response.statusCode >= 300) {
+					return reject(createError(response.statusCode, body));
+				} else {
+					try {
+						const json = JSON.parse(body);
+						return resolve(json);
+					} catch (e) {
+						return reject(e);
+					}
 				}
-				return res;
-			})
-			.then(fetchres.json);
+			});
+		})
 	}
 
 	addActor (actor, data, opts) {

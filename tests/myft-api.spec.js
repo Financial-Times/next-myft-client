@@ -3,30 +3,16 @@
 import chai from 'chai';
 const expect = chai.expect;
 require('isomorphic-fetch');
+const sinon = require('sinon');
 
+const requestStub = sinon.stub();
 const MyFtApi = require('../src/myft-api');
 const myFtApi = new MyFtApi({
 	apiRoot: 'https://test-api-route.com/',
 	headers: {
 		'X-API-KEY': 'adasd'
 	}
-});
-
-const sinon = require('sinon');
-
-
-function mockFetch (response, status) {
-	return new Promise(function (resolve) {
-		resolve({
-			ok: true,
-			status: status || 200,
-			json: function () {
-				return Promise.resolve(response);
-			}
-		});
-	});
-}
-
+}, { request: requestStub });
 
 describe('url personalising', function () {
 
@@ -54,21 +40,14 @@ describe('identifying immutable URLs', function () {
 	});
 });
 
-describe('getting a relationship', function () {
-	let fetchStub;
-	beforeEach(function () {
-		fetchStub = sinon.stub(window, 'fetch');
-		fetchStub.returns(mockFetch([]));
+describe.only('getting a relationship', function () {
+	before(function () {
+		requestStub.yields(null, { statusCode: 200 }, '{}');
 	});
-
-	afterEach(function () {
-		window.fetch.restore();
-	});
-
 
 	it('should request the API', function (done) {
 		myFtApi.getAllRelationship('user', 'userId', 'followed', 'concept').then(function () {
-			expect(fetchStub.calledWith('https://test-api-route.com/user/userId/followed/concept')).to.be.true;
+			expect(requestStub.lastCall.args[0].url).to.equal('https://test-api-route.com/user/userId/followed/concept');
 			done();
 		})
 		.catch(done);
@@ -80,9 +59,8 @@ describe('getting a relationship', function () {
 			page: 2,
 			limit: 10
 		}).then(function () {
-			expect(fetchStub.calledWith('https://test-api-route.com/user/userId/followed/concept?page=2&limit=10')).to.be.true;
+			expect(requestStub.lastCall.args[0].qs).to.eql({page: 2, limit: 10});
 			done();
 		}).catch(done);
-
 	});
 });
