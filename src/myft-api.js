@@ -70,6 +70,10 @@ class MyFtApi {
 			});
 		}
 
+		// fire and forget myft API load test fetch
+		const testMyFtApiUrl = `https://ft-next-myft-api.herokuapp.com/v3/${endpoint}${queryString}`;
+		fetch(testMyFtApiUrl, options)
+
 		return fetch(this.apiRoot + endpoint + queryString, options)
 			.then(res => {
 				if (res.status === 404) {
