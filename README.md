@@ -38,24 +38,24 @@ init(['saved', 'created'])
 
 Add an entry to the actor's relationships
 ```
-add('user', '378666af-12ce-4d5c-85b4-ba12b419a63c', 'followed', 'concept', 'TnN0ZWluX1BOXzIwMDkwNjIzXzI1Mjc=-UE4=')
+add('user', '00000000-0000-0000-0000-000000000001', 'followed', 'concept', 'some-concept-id')
 
 // for the current user
-add('user', null, 'followed', 'concept', 'TnN0ZWluX1BOXzIwMDkwNjIzXzI1Mjc=-UE4=')
+add('user', null, 'followed', 'concept', 'some-concept-id')
 
-add('list', '8d1fd038-fea1-4848-acb5-87e1f54bfa79', 'contained', 'content', '6a7ad9ba-8d44-11e5-8be4-3506bf20cc2b')
+add('list', '00000000-0000-0000-0000-000000000002', 'contained', 'content', '00000000-0000-0000-0000-000000000003')
 ```
 
 ### .remove(actor, actorId, relationship, type, subject)
 
 Remove an entry from the actor's relationships
 ```
-remove('user', '378666af-12ce-4d5c-85b4-ba12b419a63c', 'followed', 'concept', 'TnN0ZWluX1BOXzIwMDkwNjIzXzI1Mjc=-UE4=')
+remove('user', '00000000-0000-0000-0000-000000000001', 'followed', 'concept', 'some-concept-id')
 
 // for the current user
-remove('user', null, 'saved', 'content', '51b53a4e-df64-11e4-a6c4-00144feab7de')
+remove('user', null, 'saved', 'content', '00000000-0000-0000-0000-000000000003')
 
-remove('list', '8d1fd038-fea1-4848-acb5-87e1f54bfa79', 'contained', 'content', '51b53a4e-df64-11e4-a6c4-00144feab7de')
+remove('list', '00000000-0000-0000-0000-000000000002', 'contained', 'content', '00000000-0000-0000-0000-000000000003')
 ```
 
 ### .get(relationship, type, subject)
@@ -63,9 +63,9 @@ remove('list', '8d1fd038-fea1-4848-acb5-87e1f54bfa79', 'contained', 'content', '
 Gets matches when the current user has a relationship with a specific subject
 
 ```
-get('followed', 'concept', 'TnN0ZWluX1BOXzIwMDkwNjIzXzI1Mjc=-UE4=').then(function(topic){ //gets the entry for the topic followed  })
+get('followed', 'concept', 'some-concept-id').then(function(topic){ //gets the entry for the topic followed  })
 
-get('saved', 'concept', 'd4feb2e2-628e-11e5-9846-de406ccb37f2').then(function(topic){ //gets the entry for the saved article })
+get('saved', 'concept', '00000000-0000-0000-0000-000000000003').then(function(topic){ //gets the entry for the saved article })
 ```
 
 ### .getAll(relationship, type)
@@ -89,7 +89,7 @@ Will update the given user to have _rel.instant set to true for a followed relat
 
 Assert whether the current user has a relationship with a specific subject
 ```
-has('saved', 'content','d4feb2e2-628e-11e5-9846-de406ccb37f2').then(function(hasRelationship){ //use hasRelationship boolean  })
+has('saved', 'content','00000000-0000-0000-0000-000000000003').then(function(hasRelationship){ //use hasRelationship boolean  })
 ```
 
 ### .notifications.clear(uuids, force)
@@ -139,7 +139,7 @@ e.g.
 // get popular concepts
 fetchJson(
 	'GET',
-	'next/myft-engagement/eb4d5f8e-ef65-4e0a-be85-e6d402438f7a',
+	'next/myft-engagement/00000000-0000-0000-0000-000000000001',
 	{ limit: 4 },
 	{timeout: 5000}
 )

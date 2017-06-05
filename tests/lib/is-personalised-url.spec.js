@@ -4,8 +4,8 @@ import chai from 'chai';
 const expect = chai.expect;
 const isPersonalisedUrl = require('../../src/lib/is-personalised-url');
 
-const userId = '3f041222-22b9-4098-b4a6-7967e48fe4f7';
-const listId = 'e077a74b-693f-4744-b055-d239f548f356';
+const userId = '00000000-0000-0000-0000-000000000000';
+const listId = '00000000-0000-0000-0000-000000000001';
 
 describe('identifying personalised URLs', () => {
 	it('should identify between personalised urls and not personalised urls', () => {

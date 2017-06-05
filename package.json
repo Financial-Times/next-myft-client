@@ -8,6 +8,7 @@
     "fetchres": "^1.5.1"
   },
   "devDependencies": {
+    "@financial-times/n-gage": "^1.2.0",
     "@financial-times/n-heroku-tools": "^6.6.0",
     "babelify": "^6.1.3",
     "bower": "^1.7.9",
@@ -28,5 +29,12 @@
     "npm-prepublish": "^1.2.1",
     "sinon": "^1.12.2",
     "textrequireify": "^2.1.1"
+  },
+  "config": {
+    "pre-git": {
+      "pre-commit": [
+        "node_modules/.bin/secret-squirrel"
+      ]
+    }
   }
 }

@@ -32,7 +32,7 @@ describe('url personalising', function () {
 
 	it('should be possible to personalise a url', function () {
 
-		const testUuid = '3f041222-22b9-4098-b4a6-7967e48fe4f7';
+		const testUuid = '00000000-0000-0000-0000-000000000000';
 
 		expect(myFtApi.personaliseUrl('/myft', testUuid)).to.equal(`/myft/${testUuid}`);
 		expect(myFtApi.personaliseUrl(`/myft/${testUuid}`, testUuid)).to.equal(`/myft/${testUuid}`);
@@ -42,14 +42,14 @@ describe('url personalising', function () {
 
 describe('identifying personalised URLs', function () {
 	it('should identify between personalised urls and not personalised urls', function () {
-		expect(myFtApi.isPersonalisedUrl('/myft/3f041222-22b9-4098-b4a6-7967e48fe4f7')).to.be.true;
+		expect(myFtApi.isPersonalisedUrl('/myft/00000000-0000-0000-0000-000000000000')).to.be.true;
 		expect(myFtApi.isPersonalisedUrl('/myft/following/')).to.be.false;
 	});
 });
 
 describe('identifying immutable URLs', function () {
 	it('should identify between immutable urls and mutable urls', function () {
-		expect(myFtApi.isImmutableUrl('/myft/3f041222-22b9-4098-b4a6-7967e48fe4f7')).to.be.true;
+		expect(myFtApi.isImmutableUrl('/myft/00000000-0000-0000-0000-000000000000')).to.be.true;
 		expect(myFtApi.isImmutableUrl('/myft/following/')).to.be.false;
 	});
 });

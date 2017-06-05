@@ -13,7 +13,7 @@ const fixtures = {
 	saved: require('./fixtures/saved.json')
 };
 
-const userUuid = '989a08e5-28ff-41fb-9627-bd827694060d';
+const userUuid = '00000000-0000-0000-0000-000000000000';
 
 function mockFetch (response, status) {
 	return new Promise(function (resolve) {
@@ -252,8 +252,8 @@ describe('endpoints', function () {
 
 	describe('list contained', function () {
 
-		const listId = 'd88e9f87-7d51-4394-bae4-b5812f817bb5';
-		const contentId = 'a5f1544e-920b-11e5-94e6-c5413829caa5';
+		const listId = '00000000-0000-0000-0000-000000000000';
+		const contentId = '00000000-0000-0000-0000-000000000000';
 
 		beforeEach(function () {
 			fetchStub.returns(mockFetch(fixtures.follow)); // ???
@@ -347,7 +347,7 @@ describe('endpoints', function () {
 				listenOnce('myft.user.followed.concept.load', function (evt) {
 					expect(myFtClient.loaded['followed.concept']).to.be.exist;
 					expect(evt.detail.count).to.equal(18);
-					expect(evt.detail.items[0].uuid).to.equal('TnN0ZWluX0dMX0FG-R0w=');
+					expect(evt.detail.items[0].uuid).to.equal('some-concept-id');
 					done();
 				});
 			}).catch(done);
@@ -357,7 +357,7 @@ describe('endpoints', function () {
 			myFtClient.init([
 				{ relationship: 'followed', type: 'concept' }
 			]).then(function () {
-				return myFtClient.get('followed', 'concept', 'TnN0ZWluX1BOXzIwMDkwNjIzXzI1Mjc=-UE4=').then(stuff => {
+				return myFtClient.get('followed', 'concept', 'some-concept-id').then(stuff => {
 					expect(stuff.length).to.equal(1);
 					expect(stuff[0].name).to.equal('J.K. Rowling');
 					done();
@@ -378,20 +378,20 @@ describe('endpoints', function () {
 
 		it('can add a follow with stringified meta and with the default userId', function (done) {
 			myFtClient.init().then(function () {
-				let callPromise = myFtClient.add('user', null, 'followed', 'concept', 'fds567ksgaj=sagjfhgsy', {
+				let callPromise = myFtClient.add('user', null, 'followed', 'concept', 'some-concept-id', {
 					someKey: 'blah'
 				});
-				let eventPromise = listenOnce('myft.user.followed.concept.add', evt => expect(evt.detail.subject).to.equal('fds567ksgaj=sagjfhgsy'));
+				let eventPromise = listenOnce('myft.user.followed.concept.add', evt => expect(evt.detail.subject).to.equal('some-concept-id'));
 				const firstNonLoadCall = fetchStub.args[3];
 
-				expect(firstNonLoadCall[0]).to.equal(`testRoot/user/${userUuid}/followed/concept/fds567ksgaj=sagjfhgsy`);
+				expect(firstNonLoadCall[0]).to.equal(`testRoot/user/${userUuid}/followed/concept/some-concept-id`);
 				expect(firstNonLoadCall[1].method).to.equal('PUT');
 				expect(firstNonLoadCall[1].headers['Content-Type']).to.equal('application/json');
 				expect(firstNonLoadCall[1]['body']).to.equal('{"someKey":"blah"}');
 
 				return Promise.all([callPromise, eventPromise]).then(results => {
 					let callPromiseResult = results[0];
-					expect(callPromiseResult.subject).to.equal('fds567ksgaj=sagjfhgsy');
+					expect(callPromiseResult.subject).to.equal('some-concept-id');
 					done();
 				});
 			})
@@ -400,20 +400,20 @@ describe('endpoints', function () {
 
 		it('can add a follow with some other userId', function (done) {
 			myFtClient.init().then(() => {
-				let callPromise = myFtClient.add('user', 'some-other-user-id', 'followed', 'concept', 'fds567ksgaj=sagjfhgsy');
+				let callPromise = myFtClient.add('user', 'some-other-user-id', 'followed', 'concept', 'some-concept-id');
 				let eventPromise = listenOnce('myft.user.followed.concept.add', evt => {
-					expect(evt.detail.subject).to.equal('fds567ksgaj=sagjfhgsy');
+					expect(evt.detail.subject).to.equal('some-concept-id');
 					expect(evt.detail.actorId).to.equal('some-other-user-id');
 				});
 				const firstNonLoadCall = fetchStub.args[3];
 
-				expect(firstNonLoadCall[0]).to.equal('testRoot/user/some-other-user-id/followed/concept/fds567ksgaj=sagjfhgsy');
+				expect(firstNonLoadCall[0]).to.equal('testRoot/user/some-other-user-id/followed/concept/some-concept-id');
 				expect(firstNonLoadCall[1].method).to.equal('PUT');
 				expect(firstNonLoadCall[1].headers['Content-Type']).to.equal('application/json');
 
 				return Promise.all([callPromise, eventPromise]).then(results => {
 					let callPromiseResult = results[0];
-					expect(callPromiseResult.subject).to.equal('fds567ksgaj=sagjfhgsy');
+					expect(callPromiseResult.subject).to.equal('some-concept-id');
 					expect(callPromiseResult.actorId).to.equal('some-other-user-id');
 					done();
 				});
@@ -423,21 +423,21 @@ describe('endpoints', function () {
 
 		it('can update a relationship', function (done) {
 			myFtClient.init().then(() => {
-				let callPromise = myFtClient.updateRelationship('user', 'some-other-user-id', 'followed', 'concept', 'fds567ksgaj=sagjfhgsy', { foo: 'bar' });
+				let callPromise = myFtClient.updateRelationship('user', 'some-other-user-id', 'followed', 'concept', 'some-concept-id', { foo: 'bar' });
 				let eventPromise = listenOnce('myft.user.followed.concept.update', evt => {
-					expect(evt.detail.subject).to.equal('fds567ksgaj=sagjfhgsy');
+					expect(evt.detail.subject).to.equal('some-concept-id');
 					expect(evt.detail.actorId).to.equal('some-other-user-id');
 
 				});
 				const firstNonLoadCall = fetchStub.args[3];
 
-				expect(firstNonLoadCall[0]).to.equal('testRoot/user/some-other-user-id/followed/concept/fds567ksgaj=sagjfhgsy');
+				expect(firstNonLoadCall[0]).to.equal('testRoot/user/some-other-user-id/followed/concept/some-concept-id');
 				expect(firstNonLoadCall[1].method).to.equal('PUT');
 				expect(firstNonLoadCall[1].headers['Content-Type']).to.equal('application/json');
 
 				return Promise.all([callPromise, eventPromise]).then(results => {
 					let callPromiseResult = results[0];
-					expect(callPromiseResult.subject).to.equal('fds567ksgaj=sagjfhgsy');
+					expect(callPromiseResult.subject).to.equal('some-concept-id');
 					expect(callPromiseResult.actorId).to.equal('some-other-user-id');
 					done();
 				});
@@ -474,20 +474,20 @@ describe('endpoints', function () {
 
 		it('can remove a follow from the current user', function (done) {
 			myFtClient.init().then(function () {
-				let callPromise = myFtClient.remove('user', null, 'followed', 'concept', 'fds567ksgaj=sagjfhgsy');
+				let callPromise = myFtClient.remove('user', null, 'followed', 'concept', 'some-concept-id');
 				let eventPromise = listenOnce('myft.user.followed.concept.remove', evt => {
-					expect(evt.detail.subject).to.equal('fds567ksgaj=sagjfhgsy');
+					expect(evt.detail.subject).to.equal('some-concept-id');
 					expect(evt.detail.actorId).to.equal(userUuid);
 				});
 				const firstNonLoadCall = fetchStub.args[3];
 
-				expect(firstNonLoadCall[0]).to.equal(`testRoot/user/${userUuid}/followed/concept/fds567ksgaj=sagjfhgsy`);
+				expect(firstNonLoadCall[0]).to.equal(`testRoot/user/${userUuid}/followed/concept/some-concept-id`);
 				expect(firstNonLoadCall[1].method).to.equal('DELETE');
 				expect(firstNonLoadCall[1].headers['Content-Type']).to.equal('application/json');
 
 				return Promise.all([callPromise, eventPromise]).then(results => {
 					let callPromiseResult = results[0];
-					expect(callPromiseResult.subject).to.equal('fds567ksgaj=sagjfhgsy');
+					expect(callPromiseResult.subject).to.equal('some-concept-id');
 					expect(callPromiseResult.actorId).to.equal(userUuid);
 					done();
 				});
@@ -497,20 +497,20 @@ describe('endpoints', function () {
 
 		it('can remove a follow from some other user', function (done) {
 			myFtClient.init().then(function () {
-				let callPromise = myFtClient.remove('user', 'some-other-user-id', 'followed', 'concept', 'fds567ksgaj=sagjfhgsy');
+				let callPromise = myFtClient.remove('user', 'some-other-user-id', 'followed', 'concept', 'some-concept-id');
 				let eventPromise = listenOnce('myft.user.followed.concept.remove', function (evt) {
-					expect(evt.detail.subject).to.equal('fds567ksgaj=sagjfhgsy');
+					expect(evt.detail.subject).to.equal('some-concept-id');
 					expect(evt.detail.actorId).to.equal('some-other-user-id');
 				});
 				const firstNonLoadCall = fetchStub.args[3];
 
-				expect(firstNonLoadCall[0]).to.equal('testRoot/user/some-other-user-id/followed/concept/fds567ksgaj=sagjfhgsy');
+				expect(firstNonLoadCall[0]).to.equal('testRoot/user/some-other-user-id/followed/concept/some-concept-id');
 				expect(firstNonLoadCall[1].method).to.equal('DELETE');
 				expect(firstNonLoadCall[1].headers['Content-Type']).to.equal('application/json');
 
 				return Promise.all([callPromise, eventPromise]).then(results => {
 					let callPromiseResult = results[0];
-					expect(callPromiseResult.subject).to.equal('fds567ksgaj=sagjfhgsy');
+					expect(callPromiseResult.subject).to.equal('some-concept-id');
 					expect(callPromiseResult.actorId).to.equal('some-other-user-id');
 					done();
 				});
@@ -532,7 +532,7 @@ describe('endpoints', function () {
 				listenOnce('myft.user.saved.content.load', function (evt) {
 					expect(myFtClient.loaded['saved.content']).to.be.exist;
 					expect(evt.detail.count).to.equal(3);
-					expect(evt.detail.items[0].uuid = 'd4feb2e2-628e-11e5-9846-de406ccb37f2');
+					expect(evt.detail.items[0].uuid = '00000000-0000-0000-0000-000000000000');
 					done();
 				});
 			})
@@ -544,7 +544,7 @@ describe('endpoints', function () {
 			myFtClient.init([
 				{ relationship: 'saved', type: 'content' }
 			]).then(function () {
-				return myFtClient.get('saved', 'content', '0b020018-52a7-3862-a9df-cb0621078128').then(stuff => {
+				return myFtClient.get('saved', 'content', '00000000-0000-0000-0000-000000000000').then(stuff => {
 					expect(stuff.length).to.equal(1);
 					done();
 				});
