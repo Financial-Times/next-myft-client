@@ -33,7 +33,7 @@ function listenOnce (eventName, func) {
 			func(ev);
 			resolve();
 			document.removeEventListener(eventName, listener);
-		})
+		});
 	});
 }
 function clearCookie () {
@@ -55,7 +55,7 @@ describe('Initialising', function () {
 	});
 
 	afterEach(function () {
-		clearCookie()
+		clearCookie();
 		window.fetch.restore();
 	});
 
@@ -146,7 +146,7 @@ describe('Requesting relationships on initialisation', function () {
 	});
 
 	afterEach(function () {
-		clearCookie()
+		clearCookie();
 		window.fetch.restore();
 		session.uuid.restore();
 		fetchStub.reset();
@@ -245,7 +245,7 @@ describe('endpoints', function () {
 	});
 
 	afterEach(function () {
-		clearCookie()
+		clearCookie();
 		window.fetch.restore();
 		session.uuid.restore();
 	});
@@ -322,7 +322,7 @@ describe('endpoints', function () {
 				if(err.message === 'no actorId specified') {
 					done();
 				} else {
-					done(err)
+					done(err);
 				}
 			});
 		});

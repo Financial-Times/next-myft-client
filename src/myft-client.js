@@ -34,7 +34,7 @@ class MyFtClient {
 		}
 		this.initialised = true;
 
-		const anonymousUser = !(/FTSession=/.test(document.cookie))
+		const anonymousUser = !(/FTSession=/.test(document.cookie));
 		if(anonymousUser) {
 			return Promise.reject('No session cookie found');
 		}
@@ -81,10 +81,10 @@ class MyFtClient {
 		if (!p || !p.mark) return;
 		Promise.all([
 			new Promise(res => {
-				document.addEventListener('myft.user.followed.concept.load', res)
+				document.addEventListener('myft.user.followed.concept.load', res);
 			}),
 			new Promise(res => {
-				document.addEventListener('myft.user.saved.content.load', res)
+				document.addEventListener('myft.user.saved.content.load', res);
 			})
 		])
 			.then(() => p.mark('myftLoaded'));

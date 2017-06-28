@@ -24,5 +24,5 @@ describe('identifying immutable URLs', () => {
 		expect(isImmutableUrl('/myft/my-topics/')).to.be.true;
 		expect(isImmutableUrl('/myft/preferences/')).to.be.true;
 		expect(isImmutableUrl('/myft/product-tour')).to.be.true;
-	})
+	});
 });
