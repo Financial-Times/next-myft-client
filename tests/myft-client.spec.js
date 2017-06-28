@@ -347,7 +347,7 @@ describe('endpoints', function () {
 				listenOnce('myft.user.followed.concept.load', function (evt) {
 					expect(myFtClient.loaded['followed.concept']).to.be.exist;
 					expect(evt.detail.count).to.equal(18);
-					expect(evt.detail.items[0].uuid).to.equal('some-concept-id');
+					expect(evt.detail.items[0].uuid).to.equal('some-concept-id-1');
 					done();
 				});
 			}).catch(done);
@@ -357,9 +357,9 @@ describe('endpoints', function () {
 			myFtClient.init([
 				{ relationship: 'followed', type: 'concept' }
 			]).then(function () {
-				return myFtClient.get('followed', 'concept', 'some-concept-id').then(stuff => {
+				return myFtClient.get('followed', 'concept', 'some-concept-id-1').then(stuff => {
 					expect(stuff.length).to.equal(1);
-					expect(stuff[0].name).to.equal('J.K. Rowling');
+					expect(stuff[0].name).to.equal('Afghanistan');
 					done();
 				});
 			}).catch(done);
@@ -450,7 +450,7 @@ describe('endpoints', function () {
 			myFtClient.init([
 				{ relationship: 'followed', type: 'concept' }
 			]).then(function () {
-				return myFtClient.has('followed', 'concept', 'TnN0ZWluX0dMX0FG-R0w=');
+				return myFtClient.has('followed', 'concept', 'some-concept-id-3');
 			}).then(function (hasFollowed) {
 				expect(hasFollowed).to.be.true;
 				done();
