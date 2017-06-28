@@ -5,7 +5,6 @@ node_modules/@financial-times/n-gage/index.mk:
 -include node_modules/@financial-times/n-gage/index.mk
 
 unit-test:
-	@echo "Testing…"
 	karma start --single-run
 
 test: verify unit-test
