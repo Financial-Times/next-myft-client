@@ -34,6 +34,7 @@
   },
   "scripts": {
     "precommit": "make verify && node_modules/.bin/secret-squirrel",
-    "prepush": "make unit-test"
+    "prepush": "make unit-test && make verify -j3",
+    "commitmsg": "node_modules/.bin/secret-squirrel-commitmsg"
   }
 }

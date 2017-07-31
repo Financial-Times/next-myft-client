@@ -51,7 +51,8 @@ class MyFtClient {
 
 				this.headers = {
 					'Content-Type': 'application/json',
-					'X-FT-Session-Token': session.cookie()
+					'X-FT-Session-Token': session.cookie(),
+					accept: 'application/json'
 				};
 
 				let relationships = new Set([
@@ -220,6 +221,19 @@ class MyFtClient {
 		} else {
 			return actorId;
 		}
+	}
+
+	followPlusDigestEmail (conceptId, conceptData) {
+		return this.fetchJson('PUT', `${this.userId}/follow-plus-digest-email/${conceptId}`, conceptData)
+			.then(() => {
+				const details = {
+					actorId: this.userId,
+					subject: conceptId,
+					data: conceptData
+				};
+				this.emit('user.followed.concept.update', details);
+				return details;
+			});
 	}
 }
 

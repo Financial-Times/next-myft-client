@@ -609,4 +609,39 @@ describe('endpoints', function () {
 		});
 	});
 
+	describe('followed-plus-digest', function () {
+
+		beforeEach(function () {
+			fetchStub.returns(mockFetch(fixtures.follow));
+		});
+
+		afterEach(function () {
+			fetchStub.reset();
+		});
+
+		it('can do a follow plus digest call', function () {
+
+			return myFtClient.init().then(() => {
+				let callPromise = myFtClient.followPlusDigestEmail('some-concept-id', { foo: 'bar' });
+				let eventPromise = listenOnce('myft.user.followed.concept.update', evt => {
+					expect(evt.detail.subject).to.equal('some-concept-id');
+					expect(evt.detail.actorId).to.equal('00000000-0000-0000-0000-000000000000');
+				});
+				const firstNonLoadCall = fetchStub.args[3];
+
+				expect(firstNonLoadCall[0]).to.equal('testRoot/00000000-0000-0000-0000-000000000000/follow-plus-digest-email/some-concept-id');
+				expect(firstNonLoadCall[1].method).to.equal('PUT');
+				expect(firstNonLoadCall[1].headers['Content-Type']).to.equal('application/json');
+
+				return Promise.all([callPromise, eventPromise]).then(results => {
+					let callPromiseResult = results[0];
+					expect(callPromiseResult.subject).to.equal('some-concept-id');
+					expect(callPromiseResult.actorId).to.equal('00000000-0000-0000-0000-000000000000');
+				});
+
+			});
+		});
+
+	});
+
 });
