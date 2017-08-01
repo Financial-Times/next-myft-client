@@ -524,19 +524,17 @@ describe('endpoints', function () {
 			fetchStub.returns(mockFetch(fixtures.saved));
 		});
 
-		it('loads save for later data from server', function (done) {
-			myFtClient.init([
+		it('loads save for later data from server', function () {
+			return myFtClient.init([
 				{ relationship: 'saved', type: 'content' }
 			]).then(function () {
 				expect(fetchStub.calledWith(`testRoot/${userUuid}/saved/content`)).to.be.true;
-				listenOnce('myft.user.saved.content.load', function (evt) {
+				return listenOnce('myft.user.saved.content.load', function (evt) {
 					expect(myFtClient.loaded['saved.content']).to.be.exist;
 					expect(evt.detail.count).to.equal(3);
 					expect(evt.detail.items[0].uuid = '00000000-0000-0000-0000-000000000000');
-					done();
 				});
 			})
-				.catch(done);
 
 		});
 
@@ -563,8 +561,8 @@ describe('endpoints', function () {
 		});
 
 
-		it('can add a save for later with stringified meta', function (done) {
-			myFtClient.init().then(function () {
+		it('can add a save for later with stringified meta', function () {
+			return myFtClient.init().then(function () {
 				let callPromise = myFtClient.add('user', null, 'saved', 'content', '12345', {
 					someKey: 'blah'
 				});
@@ -581,11 +579,8 @@ describe('endpoints', function () {
 				return Promise.all([callPromise, eventPromise]).then(results => {
 					let callPromiseResult = results[0];
 					expect(callPromiseResult.subject).to.equal('12345');
-					done();
 				});
 			})
-				.catch(done);
-
 		});
 
 		it('can remove a saved', function (done) {
