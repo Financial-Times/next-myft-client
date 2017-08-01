@@ -225,9 +225,10 @@ class MyFtClient {
 
 	followPlusDigestEmail (conceptId, conceptData) {
 		return this.fetchJson('PUT', `${this.userId}/follow-plus-digest-email/${conceptId}`, conceptData)
-			.then(() => {
+			.then(results => {
 				const details = {
 					actorId: this.userId,
+					results,
 					subject: conceptId,
 					data: conceptData
 				};
