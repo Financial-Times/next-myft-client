@@ -518,7 +518,7 @@ describe('endpoints', function () {
 					expect(evt.detail.count).to.equal(3);
 					expect(evt.detail.items[0].uuid = '00000000-0000-0000-0000-000000000000');
 				});
-			})
+			});
 
 		});
 
@@ -564,7 +564,7 @@ describe('endpoints', function () {
 					let callPromiseResult = results[0];
 					expect(callPromiseResult.subject).to.equal('12345');
 				});
-			})
+			});
 		});
 
 		it('can remove a saved', function (done) {
