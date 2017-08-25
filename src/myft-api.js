@@ -14,8 +14,8 @@ const defaultHeaders = {
 };
 
 const envHeaders = {};
-if(process.env.NODE_ENV !== 'production') {
-	envHeaders['ft-bypass-maintenance-mode-for-get'] = true;
+if (process.env.BYPASS_MYFT_MAINTENANCE_MODE) {
+	envHeaders['ft-bypass-myft-maintenance-mode'] = true;
 }
 
 class MyFtApi {

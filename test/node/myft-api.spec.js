@@ -6,41 +6,7 @@ fetchMock.get('*', []);
 
 describe('myFT node API', () => {
 
-	describe('in prod environment', () => {
-
-		let MyFtApi;
-		let myFtApi;
-
-		let previousNodeEnv;
-
-		beforeEach(function () {
-			previousNodeEnv = process.env.NODE_ENV;
-			process.env.NODE_ENV = 'production';
-
-			delete require.cache[require.resolve('../../src/myft-api')];
-			MyFtApi = require('../../src/myft-api');
-			myFtApi = new MyFtApi({
-				apiRoot: 'https://test-api-route.com/',
-				headers: {
-					'X-API-KEY': 'adasd'
-				}
-			});
-		});
-
-		afterEach(function () {
-			fetchMock.reset();
-			process.env.NODE_ENV = previousNodeEnv;
-		});
-
-		it('should NOT pass a flag to bypass maintenance mode', () => {
-			return myFtApi.getAllRelationship('user', 'userId', 'followed', 'concept').then(() => {
-				expect(fetchMock.lastOptions('*').headers['ft-bypass-maintenance-mode-for-get']).to.not.be.true;
-			});
-		});
-
-	});
-
-	describe('in non-prod environment', () => {
+	describe('default environment', () => {
 
 		const MyFtApi = require('../../src/myft-api');
 		const myFtApi = new MyFtApi({
@@ -92,11 +58,45 @@ describe('myFT node API', () => {
 				});
 			});
 
-			it('should pass a flag to bypass maintenance mode (as we\'re not in prod)', () => {
+			it('should not pass a flag to bypass maintenance mode', () => {
 				return myFtApi.getAllRelationship('user', 'userId', 'followed', 'concept').then(() => {
-					expect(fetchMock.lastOptions('*').headers['ft-bypass-maintenance-mode-for-get']).to.be.true;
+					expect(fetchMock.lastOptions('*').headers['ft-bypass-myft-maintenance-mode']).to.not.be.true;
 				});
 			});
 		});
+	});
+
+	describe('when BYPASS_MYFT_MAINTENANCE_MODE flag is set', () => {
+
+		let MyFtApi;
+		let myFtApi;
+
+		let previousBypassMaintenanceMode;
+
+		beforeEach(function () {
+			previousBypassMaintenanceMode = process.env.BYPASS_MYFT_MAINTENANCE_MODE;
+			process.env.BYPASS_MYFT_MAINTENANCE_MODE = true;
+
+			delete require.cache[require.resolve('../../src/myft-api')];
+			MyFtApi = require('../../src/myft-api');
+			myFtApi = new MyFtApi({
+				apiRoot: 'https://test-api-route.com/',
+				headers: {
+					'X-API-KEY': 'adasd'
+				}
+			});
+		});
+
+		afterEach(function () {
+			fetchMock.reset();
+			process.env.BYPASS_MYFT_MAINTENANCE_MODE = previousBypassMaintenanceMode;
+		});
+
+		it('should pass a flag to bypass maintenance mode', () => {
+			return myFtApi.getAllRelationship('user', 'userId', 'followed', 'concept').then(() => {
+				expect(fetchMock.lastOptions('*').headers['ft-bypass-myft-maintenance-mode']).to.be.true;
+			});
+		});
+
 	});
 });
