@@ -1,5 +1,5 @@
-/*global expect*/
-const isValidUuid = require('../../src/lib/is-valid-uuid');
+const { expect } = require('chai');
+const isValidUuid = require('../../../src/lib/is-valid-uuid');
 
 describe('identifying valid UUIDs', () => {
 	it('should return true for valid UUIDs', () => {

@@ -1,5 +1,5 @@
-/* global expect */
-const sanitize = require('../../src/lib/sanitize-data');
+const { expect } = require('chai');
+const sanitize = require('../../../src/lib/sanitize-data');
 
 describe('Sanitize data', () => {
 	let dummyData;

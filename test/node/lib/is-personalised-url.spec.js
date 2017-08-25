@@ -1,8 +1,5 @@
-'use strict';
-
-import chai from 'chai';
-const expect = chai.expect;
-const isPersonalisedUrl = require('../../src/lib/is-personalised-url');
+const { expect } = require('chai');
+const isPersonalisedUrl = require('../../../src/lib/is-personalised-url');
 
 const userId = '00000000-0000-0000-0000-000000000000';
 const listId = '00000000-0000-0000-0000-000000000001';

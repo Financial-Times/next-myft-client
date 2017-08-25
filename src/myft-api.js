@@ -34,7 +34,7 @@ class MyFtApi {
 		}, opts);
 
 
-		if(/undefined/.test(endpoint)) {
+		if (/undefined/.test(endpoint)) {
 			return Promise.reject('Request should not contain undefined.');
 		}
 
@@ -44,7 +44,7 @@ class MyFtApi {
 		if (method !== 'GET') {
 
 			// fiddle content length header to appease Fastly
-			if(process && process.env.NODE_ENV === 'production') {
+			if (process.env.NODE_ENV === 'production') {
 
 				// Fastly requires that empty requests have an empty object for a body and local API requires that
 				// they don't
@@ -57,12 +57,12 @@ class MyFtApi {
 			}
 		} else {
 
-			if(process && process.env.NODE_ENV === 'production') {
+			if (process && process.env.NODE_ENV === 'production') {
 				this.headers['Content-Length'] = 0;
 			}
 
 			Object.keys(data || {}).forEach(function (key) {
-				if(queryString.length) {
+				if (queryString.length) {
 					queryString += `&${key}=${data[key]}`;
 				} else {
 					queryString += `?${key}=${data[key]}`;

@@ -1,8 +1,5 @@
-'use strict';
-
-import chai from 'chai';
-const expect = chai.expect;
-const isImmutableUrl = require('../../src/lib/is-immutable-url');
+const { expect } = require('chai');
+const isImmutableUrl = require('../../../src/lib/is-immutable-url');
 
 describe('identifying immutable URLs', () => {
 	it('should identify between immutable urls and mutable urls', () => {
