@@ -26,9 +26,9 @@ class MyFtApi {
 		this.apiRoot = opts.apiRoot;
 
 		this.headers = Object.assign({},
-			opts.headers,
 			defaultHeaders,
-			envHeaders
+			envHeaders,
+			opts.headers
 		);
 	}
 
