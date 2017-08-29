@@ -1,5 +1,5 @@
-/*global expect*/
-const isLegacyUrl = require('../../src/lib/is-legacy-url');
+const { expect } = require('chai');
+const isLegacyUrl = require('../../../src/lib/is-legacy-url');
 
 describe('identifying legacy URLs', () => {
 	it('should identify between legacy urls and current urls', () => {

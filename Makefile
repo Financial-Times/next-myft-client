@@ -1,32 +1,19 @@
-PORT := 3003
-OBT := $(shell which origami-build-tools)
+node_modules/@financial-times/n-gage/index.mk:
+	npm install @financial-times/n-gage
+	touch $@
 
-.PHONY: test
+-include node_modules/@financial-times/n-gage/index.mk
 
-install:
-ifeq ($(OBT),)
-	@echo "You need to install origami build tools first!  See docs here: http://origami.ft.com/docs/developer-guide/building-modules/"
-	exit 1
-endif
-	origami-build-tools install
+unit-test-node:
+	mocha test/node --recursive
 
-verify:
-	nbt verify --skip-layout-checks --skip-dotenv-check
+unit-test-browser:
+	karma start --single-run
 
-test: unit-test verify
+unit-test: unit-test-node unit-test-browser
 
-unit-test:
-	./node_modules/karma/bin/karma start --single-run
+test: verify unit-test
 
 test-dev:
-	./node_modules/karma/bin/karma start --browsers Chrome
-
-
-build:
-	@./node_modules/.bin/gulp
-
-watch:
-	@./node_modules/.bin/gulp watch
-
-heroku-cfg:
-	@heroku config:add BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi.git
+	@echo "Testing…"
+	karma start --browsers Chrome

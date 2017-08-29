@@ -1,0 +1,172 @@
+{
+	"user": {
+		"_id": 6913,
+		"labels": [
+			"User"
+		],
+		"properties": {
+			"nodeRank": 26,
+			"uuid": "00000000-0000-0000-0000-000000000001"
+		}
+	},
+	"total": 18,
+	"items": [
+		{
+			"nodeRank": 796,
+			"name": "Afghanistan",
+			"uuid": "some-concept-id-1",
+			"_rel": {
+				"updated": 1444050346761,
+				"count": 1,
+				"created": 1444050346761
+			}
+		},
+		{
+			"nodeRank": 511,
+			"name": "Chapel Down Group PLC",
+			"uuid": "some-concept-id-2",
+			"_rel": {
+				"updated": 1443100633355,
+				"count": 1,
+				"created": 1443100633355
+			}
+		},
+		{
+			"nodeRank": 1074,
+			"name": "JPMorgan Chase & Co",
+			"uuid": "some-concept-id-3",
+			"_rel": {
+				"updated": 1443093678877,
+				"count": 1,
+				"created": 1443093678877
+			}
+		},
+		{
+			"nodeRank": 1014,
+			"name": "John Gapper",
+			"uuid": "some-concept-id-4",
+			"_rel": {
+				"updated": 1443094079749,
+				"count": 25,
+				"created": 1443093233801
+			}
+		},
+		{
+			"nodeRank": 566,
+			"name": "Pamplona Capital Management LLP",
+			"uuid": "some-concept-id-5",
+			"_rel": {
+				"updated": 1443083452178,
+				"count": 1,
+				"created": 1443083452178
+			}
+		},
+		{
+			"nodeRank": 777,
+			"name": "Facebook",
+			"uuid": "some-concept-id-6",
+			"_rel": {
+				"updated": 1442569668830,
+				"count": 1,
+				"created": 1442569668830
+			}
+		},
+		{
+			"nodeRank": 935,
+			"name": "UK house prices",
+			"uuid": "some-concept-id-7",
+			"_rel": {
+				"created": "1440772202531"
+			}
+		},
+		{
+			"nodeRank": 1030,
+			"name": "Global terror",
+			"uuid": "some-concept-id-8",
+			"_rel": {
+				"created": "1440590706543"
+			}
+		},
+		{
+			"nodeRank": 1036,
+			"name": "Lunch with the FT",
+			"uuid": "some-concept-id-9",
+			"_rel": {
+				"created": "1440245930372"
+			}
+		},
+		{
+			"nodeRank": 752,
+			"name": "Kim Jong Un",
+			"uuid": "some-concept-id-10",
+			"_rel": {
+				"created": "1440067727773"
+			}
+		},
+		{
+			"nodeRank": 1509,
+			"name": "Managing Yourself",
+			"uuid": "some-concept-id-11",
+			"_rel": {
+				"created": "1439903670445"
+			}
+		},
+		{
+			"nodeRank": 854,
+			"name": "Innovation",
+			"uuid": "some-concept-id-12",
+			"_rel": {
+				"created": "1439903668387"
+			}
+		},
+		{
+			"nodeRank": 813,
+			"name": "Crowdfunding",
+			"uuid": "some-concept-id-13",
+			"_rel": {
+				"created": "1439903665713"
+			}
+		},
+		{
+			"nodeRank": 927,
+			"name": "Digital Media",
+			"uuid": "some-concept-id-14",
+			"_rel": {
+				"created": "1439041180309"
+			}
+		},
+		{
+			"nodeRank": 765,
+			"name": "Sky PLC",
+			"uuid": "some-concept-id-15",
+			"_rel": {
+				"created": "1439040984579"
+			}
+		},
+		{
+			"nodeRank": 759,
+			"name": "Tech blog",
+			"uuid": "some-concept-id-16",
+			"_rel": {
+				"created": "1438967522863"
+			}
+		},
+		{
+			"nodeRank": 785,
+			"name": "John Maynard Keynes",
+			"uuid": "some-concept-id-17",
+			"_rel": {
+				"created": "1438248629433"
+			}
+		},
+		{
+			"nodeRank": 715,
+			"name": "J.K. Rowling",
+			"uuid": "some-concept-id-18",
+			"_rel": {
+				"created": "1436093428086"
+			}
+		}
+	],
+	"count": 18
+}

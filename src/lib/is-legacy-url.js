@@ -1,1 +1,1 @@
-module.exports = path => /^\/myft\/(my-news|my-topics|preferences)/.test(path);
+module.exports = path => /^\/(__)?myft\/(my-news|my-topics|preferences|product-tour)/.test(path);

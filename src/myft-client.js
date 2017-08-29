@@ -1,5 +1,4 @@
 'use strict';
-require('core.js/fn/set');
 
 const session = require('next-session-client');
 const fetchres = require('fetchres');
@@ -15,7 +14,7 @@ const emptyResponse = {
 };
 
 class MyFtClient {
-	constructor ({apiRoot} = {}) {
+	constructor ({ apiRoot } = {}) {
 		if (!apiRoot) {
 			throw 'User prefs must be constructed with an api root';
 		}
@@ -24,20 +23,27 @@ class MyFtClient {
 	}
 
 	/**
-	 * loads user's preferred, enabled and created relationships, as well as requested additional relationships
-	 * @param additionalRelationships
-	 * @returns {*}
-	 */
+	* loads user's preferred, enabled and created relationships, as well as requested additional relationships
+	* @param additionalRelationships
+	* @returns {*}
+	*/
 	init (additionalRelationships = []) {
 
 		if (this.initialised) {
 			return Promise.resolve();
 		}
 		this.initialised = true;
-		return session.uuid()
-			.then(({uuid}) => {
 
-				if(!uuid) {
+		const anonymousUser = !(/FTSession=/.test(document.cookie));
+		if (anonymousUser) {
+			return Promise.reject('No session cookie found');
+		}
+
+		this.setPerfMark();
+		return session.uuid()
+			.then(({ uuid }) => {
+
+				if (!uuid) {
 					return Promise.reject('Session service returned undefined.');
 				}
 
@@ -45,17 +51,18 @@ class MyFtClient {
 
 				this.headers = {
 					'Content-Type': 'application/json',
-					'X-FT-Session-Token': session.cookie()
+					'X-FT-Session-Token': session.cookie(),
+					accept: 'application/json'
 				};
 
 				let relationships = new Set([
-					{relationship: 'preferred', type: 'preference'},
-					{relationship: 'enabled', type: 'endpoint'},
-					{relationship: 'created', type: 'list'}
+					{ relationship: 'preferred', type: 'preference' },
+					{ relationship: 'enabled', type: 'endpoint' },
+					{ relationship: 'created', type: 'list' }
 				]);
 
 				additionalRelationships.forEach(rel => {
-					if(!relationships.has(rel)) { relationships.add(rel); }
+					if (!relationships.has(rel)) { relationships.add(rel); }
 				});
 
 				relationships.forEach(relationship => this.load(relationship));
@@ -68,6 +75,20 @@ class MyFtClient {
 				}
 				throw e;
 			});
+	}
+
+	setPerfMark () {
+		const p = window.performance || window.msPerformance || window.webkitPerformance || window.mozPerformance;
+		if (!p || !p.mark) return;
+		Promise.all([
+			new Promise(res => {
+				document.addEventListener('myft.user.followed.concept.load', res);
+			}),
+			new Promise(res => {
+				document.addEventListener('myft.user.saved.content.load', res);
+			})
+		])
+			.then(() => p.mark('myftLoaded'));
 	}
 
 	emit (name, data) {
@@ -84,6 +105,15 @@ class MyFtClient {
 			credentials: 'include'
 		};
 
+		if (/undefined/.test(endpoint)) {
+			let msg = 'Request should not contain undefined.';
+			document.body.dispatchEvent(new CustomEvent('oErrors.log', {
+				bubbles: true,
+				detail: { error: new Error(msg) }
+			}));
+			return Promise.reject(msg);
+		}
+
 		if (method !== 'GET') {
 			options.body = JSON.stringify(data || {});
 		}
@@ -97,7 +127,7 @@ class MyFtClient {
 
 		this.fetchJson('GET', `${this.userId}/${relationship.relationship}/${relationship.type}`)
 			.then(results => {
-				if(!results) {
+				if (!results) {
 					results = emptyResponse;
 				}
 				this.loaded[key] = results;
@@ -117,7 +147,7 @@ class MyFtClient {
 		actorId = this.getFallbackActorIdIfNecessary(actor, actorId);
 		return this.fetchJson('PUT', `${actor}/${actorId}/${relationship}/${type}/${subject}`, data)
 			.then(results => {
-				let details = {actorId, results, subject, data};
+				const details = { actorId, results, subject, data };
 				this.emit(`${actor}.${relationship}.${type}.add`, details);
 				return details;
 			});
@@ -126,18 +156,26 @@ class MyFtClient {
 	remove (actor, actorId, relationship, type, subject, data) {
 		actorId = this.getFallbackActorIdIfNecessary(actor, actorId);
 		return this.fetchJson('DELETE', `${actor}/${actorId}/${relationship}/${type}/${subject}`)
-			.then(()=> {
-				let details = {actorId, subject, data};
+			.then(() => {
+				const details = { actorId, subject, data };
 				this.emit(`${actor}.${relationship}.${type}.remove`, details);
 				return details;
+			});
+	}
 
+	updateRelationship (actor, actorId, relationship, type, subject, data) {
+		actorId = this.getFallbackActorIdIfNecessary(actor, actorId);
+		return this.fetchJson('PUT', `${actor}/${actorId}/${relationship}/${type}/${subject}`, data)
+			.then(results => {
+				const details = { actorId, results, subject, data };
+				this.emit(`${actor}.${relationship}.${type}.update`, details);
+				return details;
 			});
 	}
 
 	get (relationship, type, subject) {
-		return this.getAll(relationship, type).then(items => {
-			return items.filter(item => this.getUuid(item).indexOf(subject) > -1);
-		});
+		return this.getAll(relationship, type)
+			.then(items => items.filter(item => this.getUuid(item) === subject));
 	}
 
 	getAll (relationship, type) {
@@ -167,15 +205,15 @@ class MyFtClient {
 
 	personaliseUrl (url) {
 		return session.uuid()
-			.then(({uuid}) => {
+			.then(({ uuid }) => {
 				return lib.personaliseUrl(url, uuid);
 			});
 	}
 
 	//private
 	getFallbackActorIdIfNecessary (actor, actorId) {
-		if(!actorId) {
-			if(actor === 'user') {
+		if (!actorId) {
+			if (actor === 'user') {
 				return this.userId;
 			} else {
 				throw new Error('no actorId specified');
@@ -183,6 +221,20 @@ class MyFtClient {
 		} else {
 			return actorId;
 		}
+	}
+
+	followPlusDigestEmail (conceptId, conceptData) {
+		return this.fetchJson('PUT', `${this.userId}/follow-plus-digest-email/${conceptId}`, conceptData)
+			.then(results => {
+				const details = {
+					actorId: this.userId,
+					results,
+					subject: conceptId,
+					data: conceptData
+				};
+				this.emit('user.followed.concept.update', details);
+				return details;
+			});
 	}
 }
 

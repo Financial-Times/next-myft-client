@@ -4,6 +4,13 @@
 /.idea/
 /bower_components/
 /node_modules/
+/tests/
 
 .editorconfig
 .eslintrc.js
+bower.json
+circle.yml
+ft.yml
+karma.conf.js
+Makefile
+n.Makefile

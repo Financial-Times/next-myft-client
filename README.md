@@ -1,5 +1,5 @@
 # next-myft-client [![Circle CI](https://circleci.com/gh/Financial-Times/next-myft-client/tree/master.svg?style=svg)](https://circleci.com/gh/Financial-Times/next-myft-client/tree/master)
-Isomorphic client component for communicating with the *my*FT api
+Isomorphic client component for communicating with the myFT api
 
 Communicates with
 [next-myft-api](http://github.com/Financial-Times/next-myft-api)
@@ -7,9 +7,9 @@ to store preferences Details are stored against users' eRightsID.
 
 Also contains client side polling of User Notifications.
 
-:warning: Releases before v6.0.0 are no longer supported by [next-myft-page](https://github.com/Financial-Times/next-myft-page), which provides the gateway this component relies on to make *my*FT API requests.
+See the myFT wiki for an explantion of how myFT button clicks make their way to the myFT API: https://github.com/Financial-Times/next-myft-api/wiki/What-happens-when-I-click-a-myFT-button
 
-## Client-side API
+## Client-side (browser) API
 
 *Note - there are other undocumented methods but these should not be used externally*
 
@@ -38,64 +38,74 @@ init(['saved', 'created'])
 
 Add an entry to the actor's relationships
 ```
-add('user', '378666af-12ce-4d5c-85b4-ba12b419a63c', 'followed', 'concept', 'TnN0ZWluX1BOXzIwMDkwNjIzXzI1Mjc=-UE4=')
+add('user', '00000000-0000-0000-0000-000000000001', 'followed', 'concept', 'some-concept-id')
 
 // for the current user
-add('user', null, 'followed', 'concept', 'TnN0ZWluX1BOXzIwMDkwNjIzXzI1Mjc=-UE4=')
+add('user', null, 'followed', 'concept', 'some-concept-id')
 
-add('list', '8d1fd038-fea1-4848-acb5-87e1f54bfa79', 'contained', 'content', '6a7ad9ba-8d44-11e5-8be4-3506bf20cc2b')
+add('list', '00000000-0000-0000-0000-000000000002', 'contained', 'content', '00000000-0000-0000-0000-000000000003')
 ```
 
-### .remove(actor, actorId, relationship, type, subject) {
+### .remove(actor, actorId, relationship, type, subject)
 
 Remove an entry from the actor's relationships
 ```
-remove('user', '378666af-12ce-4d5c-85b4-ba12b419a63c', 'followed', 'concept', 'TnN0ZWluX1BOXzIwMDkwNjIzXzI1Mjc=-UE4=')
+remove('user', '00000000-0000-0000-0000-000000000001', 'followed', 'concept', 'some-concept-id')
 
 // for the current user
-remove('user', null, 'saved', 'content', '51b53a4e-df64-11e4-a6c4-00144feab7de')
+remove('user', null, 'saved', 'content', '00000000-0000-0000-0000-000000000003')
 
-remove('list', '8d1fd038-fea1-4848-acb5-87e1f54bfa79', 'contained', 'content', '51b53a4e-df64-11e4-a6c4-00144feab7de')
+remove('list', '00000000-0000-0000-0000-000000000002', 'contained', 'content', '00000000-0000-0000-0000-000000000003')
 ```
 
-### .get(relationship, type, subject) {
+### .get(relationship, type, subject)
 
 Gets matches when the current user has a relationship with a specific subject
 
 ```
-get('followed', 'concept', 'TnN0ZWluX1BOXzIwMDkwNjIzXzI1Mjc=-UE4=').then(function(topic){ //gets the entry for the topic followed  })
+get('followed', 'concept', 'some-concept-id').then(function(topic){ //gets the entry for the topic followed  })
 
-get('saved', 'concept', 'd4feb2e2-628e-11e5-9846-de406ccb37f2').then(function(topic){ //gets the entry for the saved article })
+get('saved', 'concept', '00000000-0000-0000-0000-000000000003').then(function(topic){ //gets the entry for the saved article })
 ```
 
-### .getAll(relationship, type) {
+### .getAll(relationship, type)
 
 Gets all nodes of this type with which the current user has this relationship
 ```
 getAll('created', 'list').then(function(createdLists){ //gets all lists the user has created })
 ```
 
-### .has(relationship, subject) {
+### .updateRelationship(actor, id, relationship, type, subject, data)
+
+Update the relationship key-value pair found under _rel
+```
+updateRelationship('user', uuid, 'followed', 'concept', 'someConceptID', { _rel: {"instant": true}})
+```
+Will update the given user to have _rel.instant set to true for a followed relationship on a concept
+
+**Note:** The serverside API doesn't require `data` to have the `_rel` key. It would just be whatever the value of `_rel` is
+
+### .has(relationship, subject)
 
 Assert whether the current user has a relationship with a specific subject
 ```
-has('saved', 'content','d4feb2e2-628e-11e5-9846-de406ccb37f2').then(function(hasRelationship){ //use hasRelationship boolean  })
+has('saved', 'content','00000000-0000-0000-0000-000000000003').then(function(hasRelationship){ //use hasRelationship boolean  })
 ```
 
 ### .notifications.clear(uuids, force)
 
-Remove an array of notifications from the user's *my*FT. If force is falsy a check will be run to make sure the notification exists before sending the request to clear it
+Remove an array of notifications from the user's myFT. If force is falsy a check will be run to make sure the notification exists before sending the request to clear it
 
 ### .notifications.markAsSeen(uuids)
 
 Mark an array of notifications as seen
 
 
-## Events
+### Events
 
 These are all fired on `document.body`
 
-### load
+#### load
 
 Fired when all data for a given user relationship has been loaded e.g. `followed:load`. `event.detail` is an object:
 ```
@@ -107,14 +117,34 @@ Fired when all data for a given user relationship has been loaded e.g. `followed
 
 For `articleFromFollow` notifications event.detail is an object with 3 properties `all`, `unseen` and `new`, all of which have the above structure
 
-### add
+#### add
 
 Fired when a successful response is received from the server for addition/editing of a record. `event.detail` varies depending on the type of relationship, but will always contain a property `subject`, which contains the subject's id.
 
-### remove
+#### remove
 
 Fired when a successful response is received from the server for deletion of a record. `event.detail` varies depending on the type of relationship, but will always contain a property `subject`, which contains the subject's id.
 
-### Testing
 
-Run `make test` to run Karma/Mocha tests.
+## Server-side (Node) API
+
+The server side API has lots of functions more-or-less mirroring the client-side API (_todo: document them_). In the absence of documentation, the available function can be seen here: https://github.com/Financial-Times/next-myft-client/blob/master/src/myft-api.js
+
+### .fetchJson(method, path, data, opts)
+
+Useful for making generic calls to the myFT API that aren't covered by convenience functions, e.g. the recommendations and engagement stuff.
+
+e.g.
+```
+// get popular concepts
+fetchJson(
+	'GET',
+	'next/myft-engagement/00000000-0000-0000-0000-000000000001',
+	{ limit: 4 },
+	{timeout: 5000}
+)
+```
+
+Note options are passed into node_fetch so [all these node_fetch options](https://www.npmjs.com/package/node-fetch#options) are valid.
+
+...

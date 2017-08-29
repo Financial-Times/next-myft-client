@@ -7,15 +7,25 @@
   "dependencies": {
     "next-session-client": "^2.0.0",
     "fetchres": "^1.4.1",
-    "core.js": "~1.2.5"
+    "core.js": "^1.2.5"
   },
   "devDependencies": {
     "isomorphic-fetch": "^2.0.0"
   },
   "ignore": [
-    ".sass-cache",
-    "node_modules",
     "bower_components",
-    "tests"
+    "node_modules",
+    "tests",
+    ".editorconfig",
+    ".eslintrc.js",
+    ".gitignore",
+    ".npmignore",
+    "circle.yml",
+    "ft.yml",
+    "ft.yml",
+    "karma.conf.js",
+    "Makefile",
+    "n.Makefile",
+    "package.json"
   ]
 }
