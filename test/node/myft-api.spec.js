@@ -94,7 +94,7 @@ describe('myFT node API', () => {
 
 		it('should pass a flag to bypass maintenance mode', () => {
 			return myFtApi.getAllRelationship('user', 'userId', 'followed', 'concept').then(() => {
-				expect(fetchMock.lastOptions('*').headers['ft-bypass-myft-maintenance-mode']).to.be.true;
+				expect(fetchMock.lastOptions('*').headers['ft-bypass-myft-maintenance-mode']).to.equal('true');
 			});
 		});
 
