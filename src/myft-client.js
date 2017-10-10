@@ -232,7 +232,7 @@ class MyFtClient {
 					subject: conceptId,
 					data: conceptData
 				};
-				this.emit('user.followed.concept.update', details);
+				this.emit('user.followed.concept.add', details);
 				return details;
 			});
 	}
