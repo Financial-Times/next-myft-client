@@ -140,7 +140,7 @@ class MyFtApi {
 				'ft-user-uuid': userUuid
 			});
 
-		return this.fetchJson('GET', `next/history/${userUuid}`, null, {headers})
+		return this.fetchJson('GET', `next/history/${userUuid}`, null, {headers});
 	}
 
 	personaliseUrl (url, uuid) {

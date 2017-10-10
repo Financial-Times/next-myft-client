@@ -599,10 +599,12 @@ describe('endpoints', function () {
 		});
 
 		it('can do a follow plus digest call', function () {
-
+console.log('follow plus digest')
 			return myFtClient.init().then(() => {
+				console.log('init ok')
 				let callPromise = myFtClient.followPlusDigestEmail('some-concept-id', { foo: 'bar' });
 				let eventPromise = listenOnce('myft.user.followed.concept.add', evt => {
+					console.log('promise ok')
 					expect(evt.detail.subject).to.equal('some-concept-id');
 					expect(evt.detail.actorId).to.equal('00000000-0000-0000-0000-000000000000');
 				});
@@ -613,6 +615,7 @@ describe('endpoints', function () {
 				expect(firstNonLoadCall[1].headers['Content-Type']).to.equal('application/json');
 
 				return Promise.all([callPromise, eventPromise]).then(results => {
+					console.log('promise')
 					let callPromiseResult = results[0];
 					expect(callPromiseResult.subject).to.equal('some-concept-id');
 					expect(callPromiseResult.actorId).to.equal('00000000-0000-0000-0000-000000000000');
