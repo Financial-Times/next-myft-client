@@ -599,12 +599,12 @@ describe('endpoints', function () {
 		});
 
 		it('can do a follow plus digest call', function () {
-console.log('follow plus digest')
+console.log('follow plus digest');// eslint-disable-line
 			return myFtClient.init().then(() => {
-				console.log('init ok')
+				console.log('init ok');// eslint-disable-line
 				let callPromise = myFtClient.followPlusDigestEmail('some-concept-id', { foo: 'bar' });
 				let eventPromise = listenOnce('myft.user.followed.concept.add', evt => {
-					console.log('promise ok')
+					console.log('promise ok');// eslint-disable-line
 					expect(evt.detail.subject).to.equal('some-concept-id');
 					expect(evt.detail.actorId).to.equal('00000000-0000-0000-0000-000000000000');
 				});
@@ -615,7 +615,7 @@ console.log('follow plus digest')
 				expect(firstNonLoadCall[1].headers['Content-Type']).to.equal('application/json');
 
 				return Promise.all([callPromise, eventPromise]).then(results => {
-					console.log('promise')
+					console.log('promise');// eslint-disable-line
 					let callPromiseResult = results[0];
 					expect(callPromiseResult.subject).to.equal('some-concept-id');
 					expect(callPromiseResult.actorId).to.equal('00000000-0000-0000-0000-000000000000');
