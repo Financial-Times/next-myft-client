@@ -602,7 +602,7 @@ describe('endpoints', function () {
 
 			return myFtClient.init().then(() => {
 				let callPromise = myFtClient.followPlusDigestEmail('some-concept-id', { foo: 'bar' });
-				let eventPromise = listenOnce('myft.user.followed.concept.update', evt => {
+				let eventPromise = listenOnce('myft.user.followed.concept.add', evt => {
 					expect(evt.detail.subject).to.equal('some-concept-id');
 					expect(evt.detail.actorId).to.equal('00000000-0000-0000-0000-000000000000');
 				});
