@@ -38,9 +38,12 @@ class MyFtApi {
 		let queryString = '';
 		let options = Object.assign({
 			method,
-			headers: this.headers,
 			credentials: 'include'
-		}, opts);
+		},
+		opts,
+		{
+			headers: this.headers
+		});
 
 		if (/undefined/.test(endpoint)) {
 			return Promise.reject('Request must not contain undefined. Invalid path: ' + endpoint);
