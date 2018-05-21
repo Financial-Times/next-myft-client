@@ -155,7 +155,7 @@ class MyFtClient {
 
 	remove (actor, actorId, relationship, type, subject, data) {
 		actorId = this.getFallbackActorIdIfNecessary(actor, actorId);
-		return this.fetchJson('DELETE', `${actor}/${actorId}/${relationship}/${type}/${subject}`)
+		return this.fetchJson('DELETE', `${actor}/${actorId}/${relationship}/${type}/${subject}`, data)
 			.then(() => {
 				const details = { actorId, subject, data };
 				this.emit(`${actor}.${relationship}.${type}.remove`, details);
