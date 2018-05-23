@@ -1,6 +1,4 @@
-'use strict';
-
-const session = require('next-session-client');
+import session from 'next-session-client';
 const fetchres = require('fetchres');
 
 const lib = {
