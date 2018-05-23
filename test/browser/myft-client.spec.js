@@ -1,8 +1,9 @@
-require('isomorphic-fetch');
-const { expect } = require('chai');
-const sinon = require('sinon');
-const session = require('next-session-client');
-const MyFtClient = require('../../src/myft-client');
+import 'isomorphic-fetch';
+import MyFtClient from '../../src/myft-client';
+import { expect } from 'chai';
+import sinon from 'sinon';
+import session from 'next-session-client';
+
 const fixtures = {
 	follow: require('./fixtures/follow.json'),
 	nofollow: require('./fixtures/nofollow.json'),
@@ -55,7 +56,7 @@ describe('Initialising', function () {
 		window.fetch.restore();
 	});
 
-	it('expecs an apiRoot', function () {
+	it('expects an apiRoot', function () {
 		expect(function () {
 			new MyFtClient();
 		}).to.throw;
@@ -63,7 +64,7 @@ describe('Initialising', function () {
 
 	it('fetches a guid from the session', function (done) {
 		document.cookie = 'FTSession=12345';
-		sinon.stub(session, 'uuid').resolves({ uuid: userUuid });
+		sinon.stub(session, 'uuid').resolves({uuid: userUuid});
 		let myFtClient = new MyFtClient({
 			apiRoot: 'testRoot/'
 		});
@@ -72,7 +73,10 @@ describe('Initialising', function () {
 				expect(myFtClient.userId).to.equal(userUuid);
 				session.uuid.restore();
 				done();
-			}).catch(done);
+			}).catch(() => {
+				session.uuid.restore();
+				done();
+			});
 	});
 
 	it('exits if no or invalid guid', function (done) {
@@ -137,7 +141,7 @@ describe('Requesting relationships on initialisation', function () {
 		clearCookie();
 		window.fetch.restore();
 		session.uuid.restore();
-		fetchStub.reset();
+		fetchStub.resetHistory();
 	});
 
 	function expectLoaded (relationship, type) {
@@ -244,7 +248,7 @@ describe('endpoints', function () {
 		});
 
 		afterEach(function () {
-			fetchStub.reset();
+			fetchStub.resetHistory();
 		});
 
 		it('can add an item to a list with stringified meta', function (done) {
@@ -320,7 +324,7 @@ describe('endpoints', function () {
 		});
 
 		afterEach(function () {
-			fetchStub.reset();
+			fetchStub.resetHistory();
 		});
 
 		it('loads follow data from server', function (done) {
@@ -595,7 +599,7 @@ describe('endpoints', function () {
 		});
 
 		afterEach(function () {
-			fetchStub.reset();
+			fetchStub.resetHistory();
 		});
 
 		it('can do a follow plus digest call', function () {
