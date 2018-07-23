@@ -105,7 +105,7 @@ Mark an array of notifications as seen
 Returns an array of primary concepts from stories that have been read in the last 7 days. Array length will be <= limit.
 The stories used are based on a single user across devices.
 
-### .getArticlesFromReadingHistory(userUuid, daysBack)
+### .getArticlesFromReadingHistory(userUuid, daysBack, options)
 
 Returns an array of article uuids that have been read in the given number of days.
 The `daysBack` argument should be supplied as a negative value, i.e. `-7` for the past 7 days.

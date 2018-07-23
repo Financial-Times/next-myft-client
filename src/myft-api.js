@@ -145,13 +145,13 @@ class MyFtApi {
 		return this.fetchJson('GET', `next/user/${userUuid}/history/topics?limit=${limit}`, null, {headers});
 	}
 
-	getArticlesFromReadingHistory (userUuid, daysBack = -7) {
+	getArticlesFromReadingHistory (userUuid, daysBack = -7, opts = {timeout: 3000}) {
 		const headers = Object.assign(this.headers,
 			{
 				'ft-user-uuid': userUuid
 			});
 
-		return this.fetchJson('GET', `next/user/${userUuid}/history/articles?limit=${daysBack}`, null, {headers});
+		return this.fetchJson('GET', `next/user/${userUuid}/history/articles?limit=${daysBack}`, null, Object.assign(opts, { headers }));
 	}
 
 	personaliseUrl (url, uuid) {
