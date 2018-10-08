@@ -112,6 +112,11 @@ The `daysBack` argument should be supplied as a negative value, i.e. `-7` for th
 The maximum is currently 7 days of history.
 The stories returned are based on a single user across devices.
 
+### .getUserLastSeenTimestamp(userUuid, options)
+
+Returns the last seen timestamp of the user(userUuid)
+The timestamp returned are based on a single user across devices.
+
 ### Events
 
 These are all fired on `document.body`
