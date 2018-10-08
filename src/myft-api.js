@@ -154,6 +154,15 @@ class MyFtApi {
 		return this.fetchJson('GET', `next/user/${userUuid}/history/articles?limit=${daysBack}`, null, Object.assign(opts, { headers }));
 	}
 
+	getUserLastSeenTimestamp (userUuid, opts = {timeout: 3000}) {
+		const headers = Object.assign(this.headers,
+			{
+				'ft-user-uuid': userUuid
+			});
+
+		return this.fetchJson('GET', `next/user/${userUuid}/last-seen`, null, Object.assign(opts, { headers }));
+	}
+
 	personaliseUrl (url, uuid) {
 		return lib.personaliseUrl(url, uuid);
 	}
