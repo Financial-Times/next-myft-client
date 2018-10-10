@@ -137,7 +137,7 @@ class MyFtApi {
 	}
 
 	getConceptsFromReadingHistory (userUuid, limit) {
-		const headers = Object.assign(this.headers,
+		const headers = Object.assign({}, this.headers,
 			{
 				'ft-user-uuid': userUuid
 			});
@@ -145,22 +145,22 @@ class MyFtApi {
 		return this.fetchJson('GET', `next/user/${userUuid}/history/topics?limit=${limit}`, null, {headers});
 	}
 
-	getArticlesFromReadingHistory (userUuid, daysBack = -7, opts = {timeout: 3000}) {
-		const headers = Object.assign(this.headers,
+	getArticlesFromReadingHistory (userUuid, daysBack = -7, opts = {}) {
+		const headers = Object.assign({}, this.headers,
 			{
 				'ft-user-uuid': userUuid
 			});
 
-		return this.fetchJson('GET', `next/user/${userUuid}/history/articles?limit=${daysBack}`, null, Object.assign(opts, { headers }));
+		return this.fetchJson('GET', `next/user/${userUuid}/history/articles?limit=${daysBack}`, null, Object.assign({ timeout: 3000 }, opts, { headers }));
 	}
 
-	getUserLastSeenTimestamp (userUuid, opts = {timeout: 3000}) {
-		const headers = Object.assign(this.headers,
+	getUserLastSeenTimestamp (userUuid, opts = {}) {
+		const headers = Object.assign({}, this.headers,
 			{
 				'ft-user-uuid': userUuid
 			});
 
-		return this.fetchJson('GET', `next/user/${userUuid}/last-seen`, null, Object.assign(opts, { headers }));
+		return this.fetchJson('GET', `next/user/${userUuid}/last-seen`, null, Object.assign({ timeout: 3000 }, opts, { headers }));
 	}
 
 	personaliseUrl (url, uuid) {
