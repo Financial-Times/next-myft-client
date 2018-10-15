@@ -137,7 +137,7 @@ class MyFtApi {
 	}
 
 	getConceptsFromReadingHistory (userUuid, limit) {
-		const headers = Object.assign({}, this.headers,
+		const headers = Object.assign(this.headers,
 			{
 				'ft-user-uuid': userUuid
 			});
@@ -146,7 +146,7 @@ class MyFtApi {
 	}
 
 	getArticlesFromReadingHistory (userUuid, daysBack = -7, opts = {}) {
-		const headers = Object.assign({}, this.headers,
+		const headers = Object.assign(this.headers,
 			{
 				'ft-user-uuid': userUuid
 			});
@@ -155,7 +155,7 @@ class MyFtApi {
 	}
 
 	getUserLastSeenTimestamp (userUuid, opts = {}) {
-		const headers = Object.assign({}, this.headers,
+		const headers = Object.assign(this.headers,
 			{
 				'ft-user-uuid': userUuid
 			});
