@@ -1,5 +1,5 @@
 import session from 'next-session-client';
-import fetchres from 'fetchres';
+import * as fetchres from 'fetchres';
 import personaliseUrl from './lib/personalise-url';
 
 const emptyResponse = {
