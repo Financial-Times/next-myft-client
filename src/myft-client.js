@@ -1,5 +1,5 @@
 import session from 'next-session-client';
-const fetchres = require('fetchres');
+import fetchres from 'fetchres';
 
 const lib = {
 	personaliseUrl: require('./lib/personalise-url')
