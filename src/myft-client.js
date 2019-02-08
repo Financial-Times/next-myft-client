@@ -1,9 +1,6 @@
 import session from 'next-session-client';
 import fetchres from 'fetchres';
-
-const lib = {
-	personaliseUrl: require('./lib/personalise-url')
-};
+import personaliseUrl from './lib/personalise-url';
 
 const emptyResponse = {
 	total: 0,
@@ -204,7 +201,7 @@ class MyFtClient {
 	personaliseUrl (url) {
 		return session.uuid()
 			.then(({ uuid }) => {
-				return lib.personaliseUrl(url, uuid);
+				return personaliseUrl(url, uuid);
 			});
 	}
 
