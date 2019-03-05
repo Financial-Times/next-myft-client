@@ -5,7 +5,7 @@
   "main": "myft-bower.js",
   "private": true,
   "dependencies": {
-    "next-session-client": "^2.0.0",
+    "next-session-client": "^2.3.5",
     "fetchres": "^1.4.1",
     "core.js": "^1.2.5"
   },
