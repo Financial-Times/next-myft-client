@@ -13,6 +13,7 @@ unit-test-browser:
 unit-test: unit-test-node unit-test-browser
 
 test: verify unit-test
+	node test.js
 
 test-dev:
 	@echo "Testing…"
