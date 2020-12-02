@@ -8,8 +8,8 @@
     "fetchres": "1.7.2"
   },
   "devDependencies": {
-    "@financial-times/n-gage": "^3.5.0",
-    "@financial-times/n-heroku-tools": "^8.0.0",
+    "@financial-times/n-gage": "^8.0.0",
+    "@financial-times/n-heroku-tools": "^12.0.0",
     "@financial-times/secret-squirrel": "^2.5.7",
     "babel-core": "^6.26.3",
     "babel-preset-env": "^1.7.0",
