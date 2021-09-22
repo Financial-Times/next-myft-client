@@ -1,4 +1,5 @@
-# next-myft-client [![Circle CI](https://circleci.com/gh/Financial-Times/next-myft-client/tree/master.svg?style=svg)](https://circleci.com/gh/Financial-Times/next-myft-client/tree/master)
+# next-myft-client [![Circle CI](https://circleci.com/gh/Financial-Times/next-myft-client/tree/main.svg?style=svg)](https://circleci.com/gh/Financial-Times/next-myft-client/tree/main)
+
 Isomorphic client component for communicating with the myFT api
 
 Communicates with
@@ -11,15 +12,13 @@ See the myFT wiki for an explantion of how myFT button clicks make their way to 
 
 ## Client-side (browser) API
 
-*Note - there are other undocumented methods but these should not be used externally*
-
+_Note - there are other undocumented methods but these should not be used externally_
 
 Relationships (between actors and subjects) can be accessed in the API and are emitted as events. By default, the
 following relationships are loaded
 
-* preferred
-* enabled
-
+- preferred
+- enabled
 
 For some requests, the actor must be specified. Where the actor does not feature in the request parameters, the actor is the current user.
 
@@ -37,6 +36,7 @@ init(['saved', 'created'])
 ### .add(actor, actorId, relationship, type, subject, meta)
 
 Add an entry to the actor's relationships
+
 ```
 add('user', '00000000-0000-0000-0000-000000000001', 'followed', 'concept', 'some-concept-id')
 
@@ -49,6 +49,7 @@ add('list', '00000000-0000-0000-0000-000000000002', 'contained', 'content', '000
 ### .remove(actor, actorId, relationship, type, subject)
 
 Remove an entry from the actor's relationships
+
 ```
 remove('user', '00000000-0000-0000-0000-000000000001', 'followed', 'concept', 'some-concept-id')
 
@@ -71,23 +72,27 @@ get('saved', 'concept', '00000000-0000-0000-0000-000000000003').then(function(to
 ### .getAll(relationship, type)
 
 Gets all nodes of this type with which the current user has this relationship
+
 ```
 getAll('created', 'list').then(function(createdLists){ //gets all lists the user has created })
 ```
 
 ### .updateRelationship(actor, id, relationship, type, subject, data)
 
-Update the relationship key-value pair found under _rel
+Update the relationship key-value pair found under \_rel
+
 ```
 updateRelationship('user', uuid, 'followed', 'concept', 'someConceptID', { _rel: {"instant": true}})
 ```
-Will update the given user to have _rel.instant set to true for a followed relationship on a concept
+
+Will update the given user to have \_rel.instant set to true for a followed relationship on a concept
 
 **Note:** The serverside API doesn't require `data` to have the `_rel` key. It would just be whatever the value of `_rel` is
 
 ### .has(relationship, subject)
 
 Assert whether the current user has a relationship with a specific subject
+
 ```
 has('saved', 'content','00000000-0000-0000-0000-000000000003').then(function(hasRelationship){ //use hasRelationship boolean  })
 ```
@@ -124,6 +129,7 @@ These are all fired on `document.body`
 #### load
 
 Fired when all data for a given user relationship has been loaded e.g. `followed:load`. `event.detail` is an object:
+
 ```
 {
 	Count: // number of items returned,
@@ -141,16 +147,16 @@ Fired when a successful response is received from the server for addition/editin
 
 Fired when a successful response is received from the server for deletion of a record. `event.detail` varies depending on the type of relationship, but will always contain a property `subject`, which contains the subject's id.
 
-
 ## Server-side (Node) API
 
-The server side API has lots of functions more-or-less mirroring the client-side API (_todo: document them_). In the absence of documentation, the available function can be seen here: https://github.com/Financial-Times/next-myft-client/blob/master/src/myft-api.js
+The server side API has lots of functions more-or-less mirroring the client-side API (_todo: document them_). In the absence of documentation, the available function can be seen here: https://github.com/Financial-Times/next-myft-client/blob/main/src/myft-api.js
 
 ### .fetchJson(method, path, data, opts)
 
 Useful for making generic calls to the myFT API that aren't covered by convenience functions, e.g. the recommendations and engagement stuff.
 
 e.g.
+
 ```
 // get popular concepts
 fetchJson(
