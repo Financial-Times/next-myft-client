@@ -79,13 +79,13 @@ getAll('created', 'list').then(function(createdLists){ //gets all lists the user
 
 ### .updateRelationship(actor, id, relationship, type, subject, data)
 
-Update the relationship key-value pair found under \_rel
+Update the relationship key-value pair found under _rel
 
 ```
 updateRelationship('user', uuid, 'followed', 'concept', 'someConceptID', { _rel: {"instant": true}})
 ```
 
-Will update the given user to have \_rel.instant set to true for a followed relationship on a concept
+Will update the given user to have _rel.instant set to true for a followed relationship on a concept
 
 **Note:** The serverside API doesn't require `data` to have the `_rel` key. It would just be whatever the value of `_rel` is
 
