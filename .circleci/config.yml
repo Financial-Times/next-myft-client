@@ -15,13 +15,13 @@ references:
 
   npm_cache_keys: &npm_cache_keys
     keys:
-      - v10-dependency-npm-{{ checksum "package-lock.json" }}-
-      - v10-dependency-npm-{{ checksum "package-lock.json" }}
-      - v10-dependency-npm-
+      - v11-dependency-npm-{{ checksum "package-lock.json" }}-
+      - v11-dependency-npm-{{ checksum "package-lock.json" }}
+      - v11-dependency-npm-
 
   cache_npm_cache: &cache_npm_cache
     save_cache:
-      key: v10-dependency-npm-{{ checksum "package-lock.json" }}-{{ epoch }}
+      key: v11-dependency-npm-{{ checksum "package-lock.json" }}-{{ epoch }}
       paths:
         - ./node_modules/
 
