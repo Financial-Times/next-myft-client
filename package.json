@@ -41,13 +41,13 @@
     "prepare": "npx snyk protect || npx snyk protect -d || true",
     "preinstall": "[ \"$INIT_CWD\" != \"$PWD\" ] || npm_config_yes=true npx check-engine"
   },
-  "engines": {
-    "node": "11.x",
-    "npm": "7.x || 8.x"
-  },
   "volta": {
-    "node": "11.4.0",
+    "node": "16.14.2",
     "npm": "7.24.2"
+  },
+  "engines": {
+    "node": "14.x || 16.x",
+    "npm": "7.x || 8.x"
   },
   "husky": {
     "hooks": {
