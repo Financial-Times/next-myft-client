@@ -1,5 +1,10 @@
 'use strict';
 
+const puppeteer = require('puppeteer');
+
+// Use Chrome headless
+process.env.CHROME_BIN = puppeteer.executablePath();
+
 module.exports = function (karma) {
 	karma.set({
 		frameworks: [ 'mocha', 'chai', 'browserify' ],
