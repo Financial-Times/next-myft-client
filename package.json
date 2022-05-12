@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "Client module to store and display user favourites",
   "main": "myft-npm.js",
-  "browser": "myft-bower.js",
+  "browser": "myft-client.js",
   "dependencies": {
     "black-hole-stream": "0.0.1",
     "fetchres": "1.7.2",

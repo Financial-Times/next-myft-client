@@ -2,7 +2,7 @@
   "name": "next-myft-client",
   "homepage": "https://github.com/Financial-Times/next-myft-client",
   "description": "JS library for User Preferences",
-  "main": "myft-bower.js",
+  "main": "myft-client.js",
   "private": true,
   "dependencies": {
     "fetchres": "^1.4.1",
