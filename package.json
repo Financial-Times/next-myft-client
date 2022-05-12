@@ -4,7 +4,7 @@
   "description": "Client module to store and display user favourites",
   "main": "myft-npm.js",
   "dependencies": {
-    "next-session-client": "^3.0.1",
+    "next-session-client": "^4.0.0",
     "black-hole-stream": "0.0.1",
     "fetchres": "1.7.2"
   },
