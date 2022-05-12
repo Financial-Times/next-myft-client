@@ -7,12 +7,15 @@ process.env.CHROME_BIN = puppeteer.executablePath();
 
 module.exports = function (karma) {
 	karma.set({
-		frameworks: [ 'mocha', 'chai', 'browserify' ],
+		frameworks: [ 'mocha', 'chai', 'browserify', 'webpack' ],
 		files: [
 			'test/browser/**/*.js'
 		],
+		webpack: {
+			'mode': 'development'
+		},
 		preprocessors: {
-			'test/browser/**/*.js': ['browserify']
+			'test/browser/**/*.js': ['webpack']
 		},
 		browserify: {
 			transform: [['babelify', {presets: ['env']}], 'debowerify', 'textrequireify'],
