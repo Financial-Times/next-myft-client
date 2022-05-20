@@ -2,7 +2,7 @@
   "name": "next-myft-client",
   "version": "0.0.0",
   "description": "Client module to store and display user favourites",
-  "main": "myft-npm.js",
+  "main": "myft-server.js",
   "browser": "myft-client.js",
   "dependencies": {
     "black-hole-stream": "0.0.1",
