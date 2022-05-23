@@ -1,9 +1,8 @@
 *.env*
 /.DS_Store
 /npm-debug.log*
-
+bower_components
 /.idea/
-/bower_components/
 /node_modules/
 .editorconfig
 .eslintrc.js

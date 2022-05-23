@@ -5,7 +5,10 @@
   "main": "myft-npm.js",
   "dependencies": {
     "black-hole-stream": "0.0.1",
-    "fetchres": "1.7.2"
+    "core.js": "^0.4.2",
+    "debowerify": "^1.5.0",
+    "fetchres": "1.7.2",
+    "next-session-client": "^3.0.1"
   },
   "devDependencies": {
     "@financial-times/n-gage": "^8.3.2",
@@ -13,16 +16,17 @@
     "@financial-times/secret-squirrel": "^2.5.7",
     "babel-core": "^6.26.3",
     "babel-preset-env": "^1.7.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
     "babelify": "^8.0.0",
-    "bower": "^1.8.8",
-    "browserify": "^16.2.2",
+    "browserify": "^16.5.2",
     "chai": "^4.1.1",
     "check-engine": "^1.10.1",
-    "debowerify": "^1.3.1",
     "eslint": "^4.19.1",
+    "esmify": "^2.1.1",
     "fetch-mock": "^5.12.2",
     "husky": "^0.14.1",
-    "isomorphic-fetch": "^2.0.0",
+    "isomorphic-fetch": "^2.2.1",
     "karma": "^2.0.2",
     "karma-browserify": "^5.2.0",
     "karma-chai": "^0.1.0",
