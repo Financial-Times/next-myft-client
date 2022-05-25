@@ -10,20 +10,6 @@ Also contains client side polling of User Notifications.
 
 See the myFT wiki for an explantion of how myFT button clicks make their way to the myFT API: https://github.com/Financial-Times/next-myft-api/wiki/What-happens-when-I-click-a-myFT-button
 
-## Installation
-
-There is an override of the package `graceful-fs` in the package.json. This functionality only works for npm >= 8. 
-Anyway dependency has been fixed in the package-lock.json so version 7 of npm can be used now to install the package.
-```
-  "overrides": {
-    "debowerify": {
-      "graceful-fs": "4.2.10"
-    }
-  }
-  ```
-  `graceful-fs` package is a dependency of the devDependency `debowerify`, and its dependency `"natives": "^1.1.0"` doesn't work on latest Node.js versions.
-  Reference to the original [issue](https://github.com/isaacs/node-graceful-fs/issues/171) and link to the original commit with the [fix](https://github.com/isaacs/node-graceful-fs/commit/5cfcea5ba3723e1777f65953253a60112737cfc3)
-  Previous workaround using `npm-force-resolutions` wasn't working and it's going to be deprecated with npm >= 8
 
 ## Client-side (browser) API
 
