@@ -18,7 +18,7 @@ module.exports = function (karma) {
 			'test/browser/**/*.js': ['webpack']
 		},
 		browserify: {
-			transform: [['babelify', {presets: ['env']}], 'debowerify', 'textrequireify'],
+			transform: [['babelify', {presets: ['env']}], 'textrequireify'],
 			debug: true
 		},
 		browsers: ['Chrome']
