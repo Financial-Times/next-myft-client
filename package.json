@@ -38,7 +38,7 @@
     "sinon": "^5.0.7",
     "snyk": "^1.168.0",
     "textrequireify": "^2.1.1",
-    "webpack": "^4.46.0"
+    "webpack": "^5.0.0"
   },
   "scripts": {
     "prepare": "npx snyk protect || npx snyk protect -d || true",
