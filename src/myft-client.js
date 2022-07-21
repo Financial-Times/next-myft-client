@@ -185,6 +185,16 @@ class MyFtClient {
 		});
 	}
 
+	getListsContent() {
+		return this.fetchJson('GET', `${this.userId}/lists`)
+			.then((lists) => {
+				if (!lists) {
+					return emptyResponse
+				}
+				return lists
+			})
+	}
+
 	has (relationship, type, subject) {
 		return this.get(relationship, type, subject)
 			.then(items => items.length > 0);

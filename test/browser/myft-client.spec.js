@@ -7,7 +7,8 @@ import session from 'next-session-client';
 const fixtures = {
 	follow: require('./fixtures/follow.json'),
 	nofollow: require('./fixtures/nofollow.json'),
-	saved: require('./fixtures/saved.json')
+	saved: require('./fixtures/saved.json'),
+	lists: require('./fixtures/lists.json')
 };
 
 const userUuid = '00000000-0000-0000-0000-000000000000';
@@ -249,6 +250,25 @@ describe('endpoints', function () {
 
 		afterEach(function () {
 			fetchStub.resetHistory();
+		});
+
+		it('can return all lists and their contents', function (done) {
+			fetchStub.returns(mockFetch(fixtures.lists));
+			const contentUuid = '00000000-0000-0000-0000-000000000001'
+
+			myFtClient.init().then(() => {
+				let callPromise = myFtClient.getListsContent()
+				const firstNonLoadCall = fetchStub.args[3];
+				expect(firstNonLoadCall[0]).to.equal(`testRoot/${myFtClient.userId}/lists`);
+				expect(firstNonLoadCall[1].method).to.equal('GET');
+
+				return Promise.all([callPromise]).then((results) => {
+					let callPromiseResult = results[0];
+					expect(callPromiseResult.items[0].uuid).to.equal(userUuid);
+					expect(callPromiseResult.items[0].content[0].uuid).to.equal(contentUuid);
+					done();
+				})
+			}).catch(done);
 		});
 
 		it('can add an item to a list with stringified meta', function (done) {
