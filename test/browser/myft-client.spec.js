@@ -255,10 +255,10 @@ describe('endpoints', function () {
 
 		it('can return all lists and their contents', function (done) {
 			fetchStub.returns(mockFetch(fixtures.lists));
-			const contentUuid = '00000000-0000-0000-0000-000000000001'
+			const contentUuid = '00000000-0000-0000-0000-000000000001';
 
 			myFtClient.init().then(() => {
-				let callPromise = myFtClient.getListsContent()
+				let callPromise = myFtClient.getListsContent();
 				const firstNonLoadCall = fetchStub.args[3];
 				expect(firstNonLoadCall[0]).to.equal(`testRoot/${myFtClient.userId}/lists`);
 				expect(firstNonLoadCall[1].method).to.equal('GET');
@@ -268,7 +268,7 @@ describe('endpoints', function () {
 					expect(callPromiseResult.items[0].uuid).to.equal(userUuid);
 					expect(callPromiseResult.items[0].content[0].uuid).to.equal(contentUuid);
 					done();
-				})
+				});
 			}).catch(done);
 		});
 

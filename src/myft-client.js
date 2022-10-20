@@ -185,14 +185,14 @@ class MyFtClient {
 		});
 	}
 
-	getListsContent() {
+	getListsContent () {
 		return this.fetchJson('GET', `${this.userId}/lists`)
 			.then((lists) => {
 				if (!lists) {
-					return emptyResponse
+					return emptyResponse;
 				}
-				return lists
-			})
+				return lists;
+			});
 	}
 
 	has (relationship, type, subject) {
