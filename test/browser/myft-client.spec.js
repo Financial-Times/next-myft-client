@@ -8,7 +8,8 @@ const fixtures = {
 	follow: require('./fixtures/follow.json'),
 	nofollow: require('./fixtures/nofollow.json'),
 	saved: require('./fixtures/saved.json'),
-	lists: require('./fixtures/lists.json')
+	lists: require('./fixtures/lists.json'),
+	publicList: require('./fixtures/publicList.json')
 };
 
 const userUuid = '00000000-0000-0000-0000-000000000000';
@@ -254,10 +255,10 @@ describe('endpoints', function () {
 
 		it('can return all lists and their contents', function (done) {
 			fetchStub.returns(mockFetch(fixtures.lists));
-			const contentUuid = '00000000-0000-0000-0000-000000000001'
+			const contentUuid = '00000000-0000-0000-0000-000000000001';
 
 			myFtClient.init().then(() => {
-				let callPromise = myFtClient.getListsContent()
+				let callPromise = myFtClient.getListsContent();
 				const firstNonLoadCall = fetchStub.args[3];
 				expect(firstNonLoadCall[0]).to.equal(`testRoot/${myFtClient.userId}/lists`);
 				expect(firstNonLoadCall[1].method).to.equal('GET');
@@ -267,7 +268,7 @@ describe('endpoints', function () {
 					expect(callPromiseResult.items[0].uuid).to.equal(userUuid);
 					expect(callPromiseResult.items[0].content[0].uuid).to.equal(contentUuid);
 					done();
-				})
+				});
 			}).catch(done);
 		});
 
@@ -645,6 +646,22 @@ describe('endpoints', function () {
 			});
 		});
 
+	});
+
+	describe('public list browsing', function () {
+		it('can get all saved articles', function (done) {
+			fetchStub.returns(mockFetch(fixtures.publicList));
+
+			myFtClient.init().then(function () {
+				return myFtClient.getPublicList('some-list-id').then(list => {
+					expect(list.articleData.length).to.equal(2);
+					expect(list.articleData[0].id).to.equal('001');
+					expect(list.articleData[0].title).to.equal('title 1');
+					expect(list.id).to.equal('1001');
+					done();
+				});
+			}).catch(done);
+		});
 	});
 
 });
