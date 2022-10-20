@@ -1,0 +1,14 @@
+{
+    "id": "1001",
+    "name": "Test Reading List",
+    "articleData": [
+        {
+            "id": "001",
+            "title": "title 1"
+        },
+        {
+            "id": "002",
+            "title": "title 2"
+        }
+    ]
+}

@@ -241,6 +241,13 @@ class MyFtClient {
 				return details;
 			});
 	}
+
+	getPublicList (listId) {
+		return this.fetchJson('GET', `public-list/${listId}`)
+			.catch((err) => {
+				throw new Error(err);
+			});
+	}
 }
 
 export default MyFtClient;
