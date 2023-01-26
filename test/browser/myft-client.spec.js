@@ -9,6 +9,7 @@ const fixtures = {
 	nofollow: require('./fixtures/nofollow.json'),
 	saved: require('./fixtures/saved.json'),
 	lists: require('./fixtures/lists.json'),
+	list: require('./fixtures/list.json'),
 	publicList: require('./fixtures/publicList.json')
 };
 
@@ -658,6 +659,20 @@ describe('endpoints', function () {
 					expect(list.articleData[0].id).to.equal('001');
 					expect(list.articleData[0].title).to.equal('title 1');
 					expect(list.id).to.equal('1001');
+					done();
+				});
+			}).catch(done);
+		});
+	});
+
+	describe('update actor', function () {
+		it('can update one list', function (done) {
+			fetchStub.returns(mockFetch(fixtures.list));
+
+			myFtClient.init().then(function () {
+				return myFtClient.updateActor('list', 'test-list-id', { isPublic: true }).then(list => {
+					expect(list.uuid).to.equal('test-list-id');
+					expect(list.isPublic).to.true;
 					done();
 				});
 			}).catch(done);
