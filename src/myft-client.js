@@ -248,6 +248,13 @@ class MyFtClient {
 				throw new Error(err);
 			});
 	}
+
+	updateActor (actor, actorId, data) {
+		return this.fetchJson('PUT', `${actor}/${actorId}`, data)
+			.catch((err) => {
+				throw new Error(err);
+			});
+	}
 }
 
 export default MyFtClient;
