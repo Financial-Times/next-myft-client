@@ -29,7 +29,7 @@ class MyFtClient {
 		}
 		this.initialised = true;
 
-		const anonymousUser = !(/FTSession=/.test(document.cookie));
+		const anonymousUser = !(/FTSession_s=/.test(document.cookie));
 		if (anonymousUser) {
 			return Promise.reject('No session cookie found');
 		}
