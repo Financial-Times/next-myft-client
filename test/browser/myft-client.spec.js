@@ -66,7 +66,7 @@ describe('Initialising', function () {
 	});
 
 	it('fetches a guid from the session', function (done) {
-		document.cookie = 'FTSession=12345';
+		document.cookie = 'FTSession_s=12345';
 		sinon.stub(session, 'uuid').resolves({uuid: userUuid});
 		let myFtClient = new MyFtClient({
 			apiRoot: 'testRoot/'
@@ -83,7 +83,7 @@ describe('Initialising', function () {
 	});
 
 	it('exits if no or invalid guid', function (done) {
-		document.cookie = 'FTSession=bad';
+		document.cookie = 'FTSession_s=bad';
 		sinon.stub(session, 'uuid').rejects();
 		let myFtClient = new MyFtClient({
 			apiRoot: 'testRoot/'
@@ -97,7 +97,7 @@ describe('Initialising', function () {
 	});
 
 	it('exits if undefined guid', function (done) {
-		document.cookie = 'FTSession=bad';
+		document.cookie = 'FTSession_s=bad';
 		sinon.stub(session, 'uuid').resolves({ uuid: undefined });
 		let myFtClient = new MyFtClient({
 			apiRoot: 'testRoot/'
@@ -110,7 +110,7 @@ describe('Initialising', function () {
 			});
 	});
 
-	it('exits early if no FTSession token in cookie', function (done) {
+	it('exits early if no FTSession_s token in cookie', function (done) {
 		document.cookie = '';
 
 		let myFtClient = new MyFtClient({
@@ -132,7 +132,7 @@ describe('Requesting relationships on initialisation', function () {
 	let fetchStub;
 	let myFtClient;
 	beforeEach(function () {
-		document.cookie = 'FTSession=12345;';
+		document.cookie = 'FTSession_s=12345;';
 		fetchStub = sinon.stub(window, 'fetch');
 		sinon.stub(session, 'uuid').resolves({ uuid: userUuid });
 		myFtClient = new MyFtClient({
@@ -194,7 +194,7 @@ describe('Requesting relationships on initialisation', function () {
 
 describe('url personalising', function () {
 	it('should be possible to personalise a url', function (done) {
-		document.cookie = 'FTSession=12345; FT_U=_EID=12324_PID=4011101642_TIME=%5BWed%2C+04-Mar-2015+11%3A49%3A49+GMT%5D_RI=0_I=0_';
+		document.cookie = 'FTSession_s=12345; FT_U=_EID=12324_PID=4011101642_TIME=%5BWed%2C+04-Mar-2015+11%3A49%3A49+GMT%5D_RI=0_I=0_';
 		sinon.stub(session, 'uuid').resolves({ uuid: userUuid });
 		let myFtClient = new MyFtClient({
 			apiRoot: 'testRoot/'
@@ -227,7 +227,7 @@ describe('endpoints', function () {
 	let fetchStub;
 	let myFtClient;
 	beforeEach(function () {
-		document.cookie = 'FTSession=12345; FT_U=_EID=12324_PID=4011101642_TIME=%5BWed%2C+04-Mar-2015+11%3A49%3A49+GMT%5D_RI=0_I=0_';
+		document.cookie = 'FTSession_s=12345; FT_U=_EID=12324_PID=4011101642_TIME=%5BWed%2C+04-Mar-2015+11%3A49%3A49+GMT%5D_RI=0_I=0_';
 		fetchStub = sinon.stub(window, 'fetch');
 		sinon.stub(session, 'uuid').resolves({ uuid: userUuid });
 		myFtClient = new MyFtClient({
