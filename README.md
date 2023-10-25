@@ -106,7 +106,7 @@ Remove an array of notifications from the user's myFT. If force is falsey a chec
 
 Mark an array of notifications as seen
 
-### .getConceptsFromReadingHistory(userUuid, limit, overrideHeaders)
+### .getConceptsFromReadingHistory(userUuid, limit, options, overrideHeaders)
 
 Returns an array of primary concepts from stories that have been read in the last 7 days. Array length will be <= limit.
 The stories used are based on a single user across devices.

@@ -136,13 +136,13 @@ class MyFtApi {
 		return this.fetchJson('POST', `purge/${actor}/${id}/${relationship}`, null, opts);
 	}
 
-	getConceptsFromReadingHistory (userUuid, limit, overrideHeaders = {}) {
+	getConceptsFromReadingHistory (userUuid, limit, opts = {}, overrideHeaders = {}) {
 		const headers = Object.assign(this.headers,
 			{
 				'ft-user-uuid': userUuid
 			}, overrideHeaders);
 
-		return this.fetchJson('GET', `next/user/${userUuid}/history/topics?limit=${limit}`, null, {headers});
+		return this.fetchJson('GET', `next/user/${userUuid}/history/topics?limit=${limit}`, null, Object.assign(opts, { headers }));
 	}
 
 	getArticlesFromReadingHistory (userUuid, daysBack = -7, opts = {}, overrideHeaders = {}) {
