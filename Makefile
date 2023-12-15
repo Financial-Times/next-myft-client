@@ -5,7 +5,7 @@ node_modules/@financial-times/n-gage/index.mk:
 -include node_modules/@financial-times/n-gage/index.mk
 
 unit-test-node:
-	mocha test/node --recursive
+	mocha test/node
 
 unit-test-browser:
 	karma start --single-run
