@@ -118,7 +118,8 @@ describe('Initialising', function () {
 		});
 		myFtClient.init()
 			.catch(function (error) {
-				expect(error).to.equal('No session cookie found');
+				expect(error).to.be.an.instanceOf(Error);
+				expect(error.message).to.equal('No session cookie found');
 				expect(myFtClient.userId).not.to.exist;
 				done();
 			});

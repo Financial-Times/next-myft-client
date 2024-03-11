@@ -21,7 +21,7 @@ if (process.env.BYPASS_MYFT_MAINTENANCE_MODE) {
 class MyFtApi {
 	constructor (opts) {
 		if (!opts.apiRoot) {
-			throw 'The myFT client must be constructed with an api root. Ensure that your app has a MYFT_API_URL env var configured.';
+			throw new Error('The myFT client must be constructed with an api root. Ensure that your app has a MYFT_API_URL env var configured.');
 		}
 		this.apiRoot = opts.apiRoot;
 
@@ -46,7 +46,7 @@ class MyFtApi {
 		});
 
 		if (/undefined/.test(endpoint)) {
-			return Promise.reject('Request must not contain undefined. Invalid path: ' + endpoint);
+			return Promise.reject(new Error('Request must not contain undefined. Invalid path: ' + endpoint));
 		}
 
 		//Sanitize data

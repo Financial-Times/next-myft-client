@@ -11,7 +11,7 @@ const emptyResponse = {
 class MyFtClient {
 	constructor ({ apiRoot } = {}) {
 		if (!apiRoot) {
-			throw 'User prefs must be constructed with an api root';
+			throw new Error('User prefs must be constructed with an api root');
 		}
 		this.apiRoot = apiRoot;
 		this.loaded = {};
@@ -31,7 +31,7 @@ class MyFtClient {
 
 		const anonymousUser = !(/FTSession_s=/.test(document.cookie));
 		if (anonymousUser) {
-			return Promise.reject('No session cookie found');
+			return Promise.reject(new Error('No session cookie found'));
 		}
 
 		this.setPerfMark();
@@ -39,7 +39,7 @@ class MyFtClient {
 			.then(({ uuid }) => {
 
 				if (!uuid) {
-					return Promise.reject('Session service returned undefined.');
+					return Promise.reject(new Error('Session service returned undefined.'));
 				}
 
 				this.userId = uuid;
