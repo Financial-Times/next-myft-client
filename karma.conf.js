@@ -7,6 +7,7 @@ process.env.CHROME_BIN = puppeteer.executablePath();
 
 module.exports = function (karma) {
 	karma.set({
+		singleRun: true,
 		frameworks: [ 'mocha', 'chai', 'browserify', 'webpack' ],
 		files: [
 			'test/browser/**/*.js'
