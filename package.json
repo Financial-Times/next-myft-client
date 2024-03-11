@@ -45,7 +45,8 @@
   "scripts": {
     "prepare": "npx snyk protect || npx snyk protect -d || true",
     "build": "dotcom-tool-kit build:local",
-    "test": "dotcom-tool-kit test:local"
+    "test": "dotcom-tool-kit test:local",
+    "start": "dotcom-tool-kit run:local"
   },
   "volta": {
     "node": "18.17.1"
