@@ -36,14 +36,18 @@ class MyFtApi {
 		opts = opts || {};
 
 		let queryString = '';
-		let options = Object.assign({
+
+		const headers = {
+			...this.headers,
+			...opts.headers
+		};
+
+		let options = {
 			method,
-			credentials: 'include'
-		},
-		opts,
-		{
-			headers: this.headers
-		});
+			credentials: 'include',
+			...opts,
+			headers
+		};
 
 		if (/undefined/.test(endpoint)) {
 			return Promise.reject(new Error('Request must not contain undefined. Invalid path: ' + endpoint));
@@ -137,30 +141,29 @@ class MyFtApi {
 	}
 
 	getConceptsFromReadingHistory (userUuid, limit, opts = {}, overrideHeaders = {}) {
-		const headers = Object.assign(this.headers,
-			{
-				'ft-user-uuid': userUuid
-			}, overrideHeaders);
-
-		return this.fetchJson('GET', `next/user/${userUuid}/history/topics?limit=${limit}`, null, Object.assign(opts, { headers }));
+		const optsModified = {
+			...opts,
+			headers: { 'ft-user-uuid': userUuid, ...overrideHeaders }
+		};
+		return this.fetchJson('GET', `next/user/${userUuid}/history/topics?limit=${limit}`, null, optsModified);
 	}
 
 	getArticlesFromReadingHistory (userUuid, daysBack = -7, opts = {}, overrideHeaders = {}) {
-		const headers = Object.assign(this.headers,
-			{
-				'ft-user-uuid': userUuid
-			}, overrideHeaders);
-
-		return this.fetchJson('GET', `next/user/${userUuid}/history/articles?limit=${daysBack}`, null, Object.assign({ timeout: 3000 }, opts, { headers }));
+		const optsModified = {
+			timeout: 3000,
+			...opts,
+			headers: { 'ft-user-uuid': userUuid, ...overrideHeaders }
+		};
+		return this.fetchJson('GET', `next/user/${userUuid}/history/articles?limit=${daysBack}`, null, optsModified);
 	}
 
 	getUserLastSeenTimestamp (userUuid, opts = {}) {
-		const headers = Object.assign(this.headers,
-			{
-				'ft-user-uuid': userUuid
-			});
-
-		return this.fetchJson('GET', `next/user/${userUuid}/last-seen`, null, Object.assign({ timeout: 3000 }, opts, { headers }));
+		const optsModified = {
+			timeout: 3000,
+			...opts,
+			headers: { 'ft-user-uuid': userUuid, ...opts.headers }
+		};
+		return this.fetchJson('GET', `next/user/${userUuid}/last-seen`, null, optsModified);
 	}
 
 	personaliseUrl (url, uuid) {
