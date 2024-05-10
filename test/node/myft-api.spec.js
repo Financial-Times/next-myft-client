@@ -9,6 +9,7 @@ describe('myFT node API', () => {
 
 	let MyFtApi = require('../../src/myft-api');
 	let myFtApi = new MyFtApi({ apiRoot: 'https://test-api-route.com/' });
+
 	const userId = '00000000-0000-0000-0000-000000000001';
 	const defaultHeaders = { 'Content-Type': 'application/json' };
 

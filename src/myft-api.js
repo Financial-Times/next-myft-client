@@ -60,12 +60,10 @@ class MyFtApi {
 
 			// fiddle content length header to appease Fastly
 			if (process.env.NODE_ENV === 'production') {
-
 				// Fastly requires that empty requests have an empty object for a body and local API requires that
 				// they don't
 				options.body = JSON.stringify(data || {});
-
-				this.headers['Content-Length'] = Buffer.byteLength(options.body);
+				options.headers['Content-Length'] = Buffer.byteLength(options.body);
 
 			} else {
 				options.body = data ? JSON.stringify(data) : null;
@@ -73,7 +71,7 @@ class MyFtApi {
 		} else {
 
 			if (process.env.NODE_ENV === 'production') {
-				this.headers['Content-Length'] = 0;
+				options.headers['Content-Length'] = 0;
 			}
 
 			Object.keys(data || {}).forEach(function (key) {
