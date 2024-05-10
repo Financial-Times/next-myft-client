@@ -3,6 +3,7 @@ const { expect } = require('chai');
 const fetchMock = require('fetch-mock');
 
 fetchMock.get('*', []);
+fetchMock.put('*', []);
 
 describe('myFT node API', () => {
 
@@ -10,6 +11,10 @@ describe('myFT node API', () => {
 	let myFtApi = new MyFtApi({ apiRoot: 'https://test-api-route.com/' });
 	const userId = '00000000-0000-0000-0000-000000000001';
 	const defaultHeaders = { 'Content-Type': 'application/json' };
+
+	afterEach(function () {
+		fetchMock.reset();
+	});
 
 	describe('Library functions', () => {
 		describe('url personalising', function () {
@@ -118,6 +123,57 @@ describe('myFT node API', () => {
 					});
 				});
 			});
+
+			describe('when NODE_ENV is production', () => {
+
+				const originalNodeEnv = process.env.NODE_ENV;
+
+				beforeEach(function () {
+					process.env.NODE_ENV = 'production';
+
+					delete require.cache[require.resolve('../../src/myft-api')];
+					MyFtApi = require('../../src/myft-api');
+				});
+
+				afterEach(function () {
+					process.env.NODE_ENV = originalNodeEnv;
+				});
+
+
+				it('should set Content-Length header with data length when method is not GET', () => {
+					myFtApi = new MyFtApi({
+						apiRoot: 'https://test-api-route.com/',
+						headers: optsHeaders
+					});
+
+					const data = { 'a': 'b' };
+					const contentLength = Buffer.byteLength(JSON.stringify(data));
+
+					return myFtApi.fetchJson('PUT', 'endpoint', data).then(() => {
+						expect(fetchMock.lastOptions('*').headers).to.deep.equal({
+							...defaultHeaders,
+							...optsHeaders,
+							'Content-Length': contentLength
+						});
+					});
+				});
+
+				it('should set Content-Length header with 0 when method is GET', () => {
+					myFtApi = new MyFtApi({
+						apiRoot: 'https://test-api-route.com/',
+						headers: optsHeaders
+					});
+
+					return myFtApi.fetchJson('GET', 'endpoint').then(() => {
+						expect(fetchMock.lastOptions('*').headers).to.deep.equal({
+							...defaultHeaders,
+							...optsHeaders,
+							'Content-Length': 0
+						});
+					});
+				});
+
+			});
 		});
 
 		describe('getConceptsFromReadingHistory', function () {
@@ -173,11 +229,10 @@ describe('myFT node API', () => {
 
 		describe('when BYPASS_MYFT_MAINTENANCE_MODE flag is set', () => {
 
-			let previousBypassMaintenanceMode;
+			let originalBypassMaintenanceMode = process.env.BYPASS_MYFT_MAINTENANCE_MODE;
 			const bypassMyftMaintenanceHeader = { 'ft-bypass-myft-maintenance-mode': 'true' };
 
 			beforeEach(function () {
-				previousBypassMaintenanceMode = process.env.BYPASS_MYFT_MAINTENANCE_MODE;
 				process.env.BYPASS_MYFT_MAINTENANCE_MODE = true;
 
 				delete require.cache[require.resolve('../../src/myft-api')];
@@ -185,8 +240,7 @@ describe('myFT node API', () => {
 			});
 
 			afterEach(function () {
-				fetchMock.reset();
-				process.env.BYPASS_MYFT_MAINTENANCE_MODE = previousBypassMaintenanceMode;
+				process.env.BYPASS_MYFT_MAINTENANCE_MODE = originalBypassMaintenanceMode;
 			});
 
 
