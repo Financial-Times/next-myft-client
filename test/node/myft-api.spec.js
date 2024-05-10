@@ -54,6 +54,9 @@ describe('myFT node API', () => {
 
 		const defaultHeaders = { 'Content-Type': 'application/json' };
 		const optsHeaders = { 'x-opts-header': 'x-opts-header-value' };
+		const functionOptsHeaders = {
+			'x-function-opts-header': 'x-function-opts-header-value'
+		};
 
 		it('should have correct default headers', () => {
 			myFtApi = new MyFtApi({ apiRoot: 'https://test-api-route.com/' });
@@ -74,6 +77,73 @@ describe('myFT node API', () => {
 		it('should not pass a flag to bypass maintenance mode', () => {
 			return myFtApi.getAllRelationship('user', userId, 'followed', 'concept').then(() => {
 				expect(fetchMock.lastOptions('*').headers['ft-bypass-myft-maintenance-mode']).to.not.be.true;
+			});
+		});
+
+		describe('fetchJson', function () {
+			it('should pass function opts header to the API calls', () => {
+				myFtApi = new MyFtApi({
+					apiRoot: 'https://test-api-route.com/',
+					headers: optsHeaders
+				});
+				return myFtApi.fetchJson('GET', 'endpont', null, { headers: functionOptsHeaders }).then(() => {
+					expect(fetchMock.lastOptions('*').headers).to.deep.equal({
+						...defaultHeaders,
+						...optsHeaders,
+						...functionOptsHeaders
+					});
+				});
+			});
+		});
+
+		describe('getConceptsFromReadingHistory', function () {
+			it('should pass function opts header to the API calls', () => {
+				myFtApi = new MyFtApi({
+					apiRoot: 'https://test-api-route.com/',
+					headers: optsHeaders
+				});
+				return myFtApi.getConceptsFromReadingHistory(userId, 10, {}, functionOptsHeaders).then(() => {
+					expect(fetchMock.lastOptions('*').headers).to.deep.equal({
+						...defaultHeaders,
+						...optsHeaders,
+						...functionOptsHeaders,
+						'ft-user-uuid': userId
+					});
+				});
+			});
+		});
+
+		describe('getArticlesFromReadingHistory', function () {
+			it('should pass function opts header to the API calls', () => {
+				myFtApi = new MyFtApi({
+					apiRoot: 'https://test-api-route.com/',
+					headers: optsHeaders
+				});
+				return myFtApi.getArticlesFromReadingHistory(userId, -7, {}, functionOptsHeaders).then(() => {
+					expect(fetchMock.lastOptions('*').headers).to.deep.equal({
+						...defaultHeaders,
+						...optsHeaders,
+						...functionOptsHeaders,
+						'ft-user-uuid': userId
+					});
+				});
+			});
+		});
+
+		describe('getUserLastSeenTimestamp', function () {
+			it('should pass function opts header to the API calls', () => {
+				myFtApi = new MyFtApi({
+					apiRoot: 'https://test-api-route.com/',
+					headers: optsHeaders
+				});
+				return myFtApi.getUserLastSeenTimestamp(userId, { headers: functionOptsHeaders }).then(() => {
+					expect(fetchMock.lastOptions('*').headers).to.deep.equal({
+						...defaultHeaders,
+						...optsHeaders,
+						...functionOptsHeaders,
+						'ft-user-uuid': userId
+					});
+				});
 			});
 		});
 
