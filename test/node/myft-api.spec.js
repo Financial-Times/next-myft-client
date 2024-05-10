@@ -9,6 +9,7 @@ describe('myFT node API', () => {
 	let MyFtApi = require('../../src/myft-api');
 	let myFtApi = new MyFtApi({ apiRoot: 'https://test-api-route.com/' });
 	const userId = '00000000-0000-0000-0000-000000000001';
+	const defaultHeaders = { 'Content-Type': 'application/json' };
 
 	describe('Library functions', () => {
 		describe('url personalising', function () {
@@ -50,9 +51,32 @@ describe('myFT node API', () => {
 		});
 	});
 
+	describe('fetchJson', function () {
+		it('should pass correct opts to the API calls', () => {
+			const method = 'GET';
+			const timeout = 1406;
+			return myFtApi.fetchJson(method, 'endpoint', null, { timeout }).then(() => {
+				expect(fetchMock.lastOptions('*')).to.deep.equal({
+					method,
+					'credentials': 'include',
+					timeout,
+					headers: { ...defaultHeaders }
+				});
+			});
+		});
+
+		it('should reject when endpoint includes undefined', (done) => {
+			const endpoint = `endpoint/undefined/${userId}`;
+			myFtApi.fetchJson('GET', endpoint)
+				.catch(err => {
+					expect(err).to.deep.equal(new Error('Request must not contain undefined. Invalid path: ' + endpoint));
+					done();
+				});
+		});
+	});
+
 	describe('Headers', () => {
 
-		const defaultHeaders = { 'Content-Type': 'application/json' };
 		const optsHeaders = { 'x-opts-header': 'x-opts-header-value' };
 		const functionOptsHeaders = {
 			'x-function-opts-header': 'x-function-opts-header-value'
@@ -86,7 +110,7 @@ describe('myFT node API', () => {
 					apiRoot: 'https://test-api-route.com/',
 					headers: optsHeaders
 				});
-				return myFtApi.fetchJson('GET', 'endpont', null, { headers: functionOptsHeaders }).then(() => {
+				return myFtApi.fetchJson('GET', 'endpoint', null, { headers: functionOptsHeaders }).then(() => {
 					expect(fetchMock.lastOptions('*').headers).to.deep.equal({
 						...defaultHeaders,
 						...optsHeaders,
