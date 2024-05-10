@@ -2,13 +2,15 @@ require('isomorphic-fetch');
 const { expect } = require('chai');
 const fetchMock = require('fetch-mock');
 
+const apiRoot = 'https://test-api-route.com/';
+
 fetchMock.get('*', []);
 fetchMock.put('*', []);
 
 describe('myFT node API', () => {
 
 	let MyFtApi = require('../../src/myft-api');
-	let myFtApi = new MyFtApi({ apiRoot: 'https://test-api-route.com/' });
+	let myFtApi = new MyFtApi({ apiRoot });
 
 	const userId = '00000000-0000-0000-0000-000000000001';
 	const defaultHeaders = { 'Content-Type': 'application/json' };
@@ -79,6 +81,34 @@ describe('myFT node API', () => {
 					done();
 				});
 		});
+
+		it('should pass data as query params when method is GET', () => {
+			const endpoint = 'endpoint';
+			const paramOne = 'paramOneValue';
+			const paramTwo = 'paramTwoValue';
+			return myFtApi.fetchJson('GET', 'endpoint', { paramOne, paramTwo} ).then(() => {
+				expect(fetchMock.lastUrl('*')).to.equal(`https://test-api-route.com/${endpoint}?paramOne=${paramOne}&paramTwo=${paramTwo}`);
+			});
+		});
+
+		it('should not pass data as query params when method is not GET', () => {
+			const endpoint = 'endpoint';
+			const paramOne = 'paramOneValue';
+			const paramTwo = 'paramTwoValue';
+			return myFtApi.fetchJson('PUT', 'endpoint', { paramOne, paramTwo} ).then(() => {
+				expect(fetchMock.lastUrl('*')).to.equal(`https://test-api-route.com/${endpoint}`);
+			});
+		});
+
+		it('should throw errors when api returns 404', (done) => {
+			const endpoint = `endpoint/${userId}`;
+			fetchMock.mock('https://test-api-route.com/endpoint/00000000-0000-0000-0000-000000000001', 404);
+			myFtApi.fetchJson('GET', endpoint)
+				.catch(err => {
+					expect(err).to.deep.equal(new Error('Request must not contain undefined. Invalid path: ' + endpoint));
+					done();
+				});
+		});
 	});
 
 	describe('Headers', () => {
@@ -89,13 +119,13 @@ describe('myFT node API', () => {
 		};
 
 		it('should have correct default headers', () => {
-			myFtApi = new MyFtApi({ apiRoot: 'https://test-api-route.com/' });
+			myFtApi = new MyFtApi({ apiRoot });
 			expect(myFtApi.headers).to.deep.equal(defaultHeaders);
 		});
 
 		it('should set headers when it is provided', () => {
 			myFtApi = new MyFtApi({
-				apiRoot: 'https://test-api-route.com/',
+				apiRoot,
 				headers: optsHeaders
 			});
 			expect(myFtApi.headers).to.deep.equal({
@@ -113,7 +143,7 @@ describe('myFT node API', () => {
 		describe('fetchJson', function () {
 			it('should pass function opts header to the API calls', () => {
 				myFtApi = new MyFtApi({
-					apiRoot: 'https://test-api-route.com/',
+					apiRoot,
 					headers: optsHeaders
 				});
 				return myFtApi.fetchJson('GET', 'endpoint', null, { headers: functionOptsHeaders }).then(() => {
@@ -143,7 +173,7 @@ describe('myFT node API', () => {
 
 				it('should set Content-Length header with data length when method is not GET', () => {
 					myFtApi = new MyFtApi({
-						apiRoot: 'https://test-api-route.com/',
+						apiRoot,
 						headers: optsHeaders
 					});
 
@@ -161,7 +191,7 @@ describe('myFT node API', () => {
 
 				it('should set Content-Length header with 0 when method is GET', () => {
 					myFtApi = new MyFtApi({
-						apiRoot: 'https://test-api-route.com/',
+						apiRoot,
 						headers: optsHeaders
 					});
 
@@ -180,7 +210,7 @@ describe('myFT node API', () => {
 		describe('getConceptsFromReadingHistory', function () {
 			it('should pass function opts header to the API calls', () => {
 				myFtApi = new MyFtApi({
-					apiRoot: 'https://test-api-route.com/',
+					apiRoot,
 					headers: optsHeaders
 				});
 				return myFtApi.getConceptsFromReadingHistory(userId, 10, {}, functionOptsHeaders).then(() => {
@@ -197,7 +227,7 @@ describe('myFT node API', () => {
 		describe('getArticlesFromReadingHistory', function () {
 			it('should pass function opts header to the API calls', () => {
 				myFtApi = new MyFtApi({
-					apiRoot: 'https://test-api-route.com/',
+					apiRoot,
 					headers: optsHeaders
 				});
 				return myFtApi.getArticlesFromReadingHistory(userId, -7, {}, functionOptsHeaders).then(() => {
@@ -214,7 +244,7 @@ describe('myFT node API', () => {
 		describe('getUserLastSeenTimestamp', function () {
 			it('should pass function opts header to the API calls', () => {
 				myFtApi = new MyFtApi({
-					apiRoot: 'https://test-api-route.com/',
+					apiRoot,
 					headers: optsHeaders
 				});
 				return myFtApi.getUserLastSeenTimestamp(userId, { headers: functionOptsHeaders }).then(() => {
@@ -247,7 +277,7 @@ describe('myFT node API', () => {
 
 			it('should set headers when it is provided', () => {
 				myFtApi = new MyFtApi({
-					apiRoot: 'https://test-api-route.com/',
+					apiRoot,
 					headers: optsHeaders
 				});
 				expect(myFtApi.headers).to.deep.equal({
@@ -258,7 +288,7 @@ describe('myFT node API', () => {
 			});
 
 			it('should pass a flag to bypass maintenance mode', () => {
-				myFtApi = new MyFtApi({ apiRoot: 'https://test-api-route.com/' });
+				myFtApi = new MyFtApi({ apiRoot });
 
 				return myFtApi.getAllRelationship('user', userId, 'followed', 'concept').then(() => {
 					expect(fetchMock.lastOptions('*').headers).to.deep.equal({
