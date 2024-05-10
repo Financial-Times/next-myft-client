@@ -55,6 +55,22 @@ describe('myFT node API', () => {
 		const defaultHeaders = { 'Content-Type': 'application/json' };
 		const optsHeaders = { 'x-opts-header': 'x-opts-header-value' };
 
+		it('should have correct default headers', () => {
+			myFtApi = new MyFtApi({ apiRoot: 'https://test-api-route.com/' });
+			expect(myFtApi.headers).to.deep.equal(defaultHeaders);
+		});
+
+		it('should set headers when it is provided', () => {
+			myFtApi = new MyFtApi({
+				apiRoot: 'https://test-api-route.com/',
+				headers: optsHeaders
+			});
+			expect(myFtApi.headers).to.deep.equal({
+				...defaultHeaders,
+				...optsHeaders
+			});
+		});
+
 		it('should not pass a flag to bypass maintenance mode', () => {
 			return myFtApi.getAllRelationship('user', userId, 'followed', 'concept').then(() => {
 				expect(fetchMock.lastOptions('*').headers['ft-bypass-myft-maintenance-mode']).to.not.be.true;
