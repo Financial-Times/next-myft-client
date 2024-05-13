@@ -1,11 +1,9 @@
 require('isomorphic-fetch');
 const { expect } = require('chai');
 const fetchMock = require('fetch-mock');
+fetchMock.config.overwriteRoutes = true;
 
 const apiRoot = 'https://test-api-route.com/';
-
-fetchMock.get('*', []);
-fetchMock.put('*', []);
 
 describe('myFT node API', () => {
 
@@ -14,6 +12,10 @@ describe('myFT node API', () => {
 
 	const userId = '00000000-0000-0000-0000-000000000001';
 	const defaultHeaders = { 'Content-Type': 'application/json' };
+
+	beforeEach(() => {
+		fetchMock.get('*', []);
+	})
 
 	afterEach(function () {
 		fetchMock.reset();
@@ -92,6 +94,7 @@ describe('myFT node API', () => {
 		});
 
 		it('should not pass data as query params when method is not GET', () => {
+			fetchMock.put('*', []);
 			const endpoint = 'endpoint';
 			const paramOne = 'paramOneValue';
 			const paramTwo = 'paramTwoValue';
@@ -172,6 +175,7 @@ describe('myFT node API', () => {
 
 
 				it('should set Content-Length header with data length when method is not GET', () => {
+					fetchMock.put('*', []);
 					myFtApi = new MyFtApi({
 						apiRoot,
 						headers: optsHeaders
