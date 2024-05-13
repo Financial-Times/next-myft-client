@@ -1,9 +1,13 @@
 require('isomorphic-fetch');
 const { expect } = require('chai');
 const fetchMock = require('fetch-mock');
-fetchMock.config.overwriteRoutes = true;
 
-const apiRoot = 'https://test-api-route.com/';
+const apiRoot = 'https://test-api.com/';
+const apiRootMatcher = `begin:${apiRoot}`;
+
+fetchMock
+	.get(apiRootMatcher, [])
+	.put(apiRootMatcher, [])
 
 describe('myFT node API', () => {
 
@@ -12,10 +16,6 @@ describe('myFT node API', () => {
 
 	const userId = '00000000-0000-0000-0000-000000000001';
 	const defaultHeaders = { 'Content-Type': 'application/json' };
-
-	beforeEach(() => {
-		fetchMock.get('*', []);
-	})
 
 	afterEach(function () {
 		fetchMock.reset();
@@ -44,76 +44,80 @@ describe('myFT node API', () => {
 		});
 	});
 
-	describe('getAllRelationship', function () {
-		it('should request the API', () => {
-			return myFtApi.getAllRelationship('user', userId, 'followed', 'concept').then(() => {
-				expect(fetchMock.lastUrl('*')).to.equal(`https://test-api-route.com/user/${userId}/followed/concept`);
-			});
+	describe('getAllRelationship', async () => {
+		it('should request the API', async () => {
+			await myFtApi.getAllRelationship('user', userId, 'followed', 'concept');
+
+			expect(fetchMock.called()).to.be.true;
 		});
 
-		it('should accept pagination parameters', () => {
-			return myFtApi.getAllRelationship('user', userId, 'followed', 'concept', {
-				page: 2,
-				limit: 10
-			}).then(() => {
-				expect(fetchMock.lastUrl('*')).to.equal(`https://test-api-route.com/user/${userId}/followed/concept?page=2&limit=10`);
-			});
+		it('should accept pagination parameters', async () => {
+			const page = 2;
+			const limit = 10;
+			await myFtApi.getAllRelationship('user', userId, 'followed', 'concept', { page, limit });
+
+			expect(fetchMock.lastUrl(apiRootMatcher)).to.equal(
+				`${apiRoot}user/${userId}/followed/concept?page=${page}&limit=${limit}`
+			);
 		});
 	});
 
-	describe('fetchJson', function () {
-		it('should pass correct opts to the API calls', () => {
+	describe('fetchJson', () => {
+		it('should pass correct opts to the API calls', async () => {
 			const method = 'GET';
 			const timeout = 1406;
-			return myFtApi.fetchJson(method, 'endpoint', null, { timeout }).then(() => {
-				expect(fetchMock.lastOptions('*')).to.deep.equal({
-					method,
-					'credentials': 'include',
-					timeout,
-					headers: { ...defaultHeaders }
-				});
+			await myFtApi.fetchJson(method, 'endpoint', null, { timeout });
+
+			expect(fetchMock.lastOptions(apiRootMatcher)).to.deep.equal({
+				method,
+				'credentials': 'include',
+				timeout,
+				headers: { ...defaultHeaders }
 			});
 		});
 
-		it('should reject when endpoint includes undefined', (done) => {
+		it('should reject when endpoint includes undefined', async () => {
 			const endpoint = `endpoint/undefined/${userId}`;
-			myFtApi.fetchJson('GET', endpoint)
-				.catch(err => {
-					expect(err).to.deep.equal(new Error('Request must not contain undefined. Invalid path: ' + endpoint));
-					done();
-				});
+			try {
+				await myFtApi.fetchJson('GET', endpoint);
+				throw new Error('Expected error did not throw!');
+			} catch (err) {
+				expect(err).to.deep.equal(new Error('Request must not contain undefined. Invalid path: ' + endpoint));
+			}
 		});
 
-		it('should pass data as query params when method is GET', () => {
+		it('should pass data as query params when method is GET', async () => {
 			const endpoint = 'endpoint';
 			const paramOne = 'paramOneValue';
 			const paramTwo = 'paramTwoValue';
-			return myFtApi.fetchJson('GET', 'endpoint', { paramOne, paramTwo} ).then(() => {
-				expect(fetchMock.lastUrl('*')).to.equal(`https://test-api-route.com/${endpoint}?paramOne=${paramOne}&paramTwo=${paramTwo}`);
-			});
+			await myFtApi.fetchJson('GET', 'endpoint', { paramOne, paramTwo});
+
+			expect(fetchMock.lastUrl(apiRootMatcher)).to.equal(
+				`${apiRoot}${endpoint}?paramOne=${paramOne}&paramTwo=${paramTwo}`
+			);
 		});
 
-		it('should not pass data as query params when method is not GET', () => {
-			fetchMock.put('*', []);
+		it('should not pass data as query params when method is not GET', async () => {
 			const endpoint = 'endpoint';
 			const paramOne = 'paramOneValue';
 			const paramTwo = 'paramTwoValue';
-			return myFtApi.fetchJson('PUT', 'endpoint', { paramOne, paramTwo} ).then(() => {
-				expect(fetchMock.lastUrl('*')).to.equal(`https://test-api-route.com/${endpoint}`);
-			});
+			await myFtApi.fetchJson('PUT', 'endpoint', { paramOne, paramTwo});
+
+			expect(fetchMock.lastUrl(apiRootMatcher)).to.equal(`${apiRoot}${endpoint}`);
 		});
 
 		it('should throw errors when api returns 404', async () => {
-			const endpoint = `endpoint/${userId}`;
-			fetchMock.restore();
+			const apiRoot404 = 'https://test-api-404.com/';
+			const endpoint = `user/${userId}`;
 			const readable = new fetchMock.stream.Readable();
 			readable.push('response string');
 			readable.push(null);
+			fetchMock.get(`${apiRoot404}${endpoint}`, { status: 404, body: readable, sendAsJson: false });
 
-			fetchMock.mock('https://test-api-route.com/endpoint/00000000-0000-0000-0000-000000000001', { status: 404, body: readable, sendAsJson: false });
 			try {
-				await myFtApi.fetchJson('GET', endpoint)
-				throw new Error(`Expected error didn't throw!`)
+				myFtApi = new MyFtApi({ apiRoot: apiRoot404 });
+				await myFtApi.fetchJson('GET', endpoint);
+				throw new Error('Expected error did not throw!');
 			} catch (err) {
 				expect(err).to.deep.equal(new Error('No user data exists'));
 			}
@@ -133,34 +137,27 @@ describe('myFT node API', () => {
 		});
 
 		it('should set headers when it is provided', () => {
-			myFtApi = new MyFtApi({
-				apiRoot,
-				headers: optsHeaders
-			});
+			myFtApi = new MyFtApi({ apiRoot, headers: optsHeaders });
 			expect(myFtApi.headers).to.deep.equal({
 				...defaultHeaders,
 				...optsHeaders
 			});
 		});
 
-		it('should not pass a flag to bypass maintenance mode', () => {
-			return myFtApi.getAllRelationship('user', userId, 'followed', 'concept').then(() => {
-				expect(fetchMock.lastOptions('*').headers['ft-bypass-myft-maintenance-mode']).to.not.be.true;
-			});
+		it('should not pass a flag to bypass maintenance mode', async () => {
+			await myFtApi.getAllRelationship('user', userId, 'followed', 'concept');
+			expect(fetchMock.lastOptions(apiRootMatcher).headers['ft-bypass-myft-maintenance-mode']).to.not.be.true;
 		});
 
-		describe('fetchJson', function () {
-			it('should pass function opts header to the API calls', () => {
-				myFtApi = new MyFtApi({
-					apiRoot,
-					headers: optsHeaders
-				});
-				return myFtApi.fetchJson('GET', 'endpoint', null, { headers: functionOptsHeaders }).then(() => {
-					expect(fetchMock.lastOptions('*').headers).to.deep.equal({
-						...defaultHeaders,
-						...optsHeaders,
-						...functionOptsHeaders
-					});
+		describe('fetchJson', () => {
+			it('should pass function opts header to the API calls', async () => {
+				myFtApi = new MyFtApi({ apiRoot, headers: optsHeaders });
+				await myFtApi.fetchJson('GET', 'endpoint', null, { headers: functionOptsHeaders });
+
+				expect(fetchMock.lastOptions(apiRootMatcher).headers).to.deep.equal({
+					...defaultHeaders,
+					...optsHeaders,
+					...functionOptsHeaders
 				});
 			});
 
@@ -180,90 +177,71 @@ describe('myFT node API', () => {
 				});
 
 
-				it('should set Content-Length header with data length when method is not GET', () => {
-					fetchMock.put('*', []);
-					myFtApi = new MyFtApi({
-						apiRoot,
-						headers: optsHeaders
-					});
-
+				it('should set Content-Length header with data length when method is not GET', async () => {
+					myFtApi = new MyFtApi({ apiRoot, headers: optsHeaders });
 					const data = { 'a': 'b' };
 					const contentLength = Buffer.byteLength(JSON.stringify(data));
+					await myFtApi.fetchJson('PUT', 'endpoint', data);
 
-					return myFtApi.fetchJson('PUT', 'endpoint', data).then(() => {
-						expect(fetchMock.lastOptions('*').headers).to.deep.equal({
-							...defaultHeaders,
-							...optsHeaders,
-							'Content-Length': contentLength
-						});
+					expect(fetchMock.lastOptions(apiRootMatcher).headers).to.deep.equal({
+						...defaultHeaders,
+						...optsHeaders,
+						'Content-Length': contentLength
 					});
 				});
 
-				it('should set Content-Length header with 0 when method is GET', () => {
-					myFtApi = new MyFtApi({
-						apiRoot,
-						headers: optsHeaders
-					});
+				it('should set Content-Length header with 0 when method is GET', async () => {
+					myFtApi = new MyFtApi({ apiRoot, headers: optsHeaders });
+					await myFtApi.fetchJson('GET', 'endpoint');
 
-					return myFtApi.fetchJson('GET', 'endpoint').then(() => {
-						expect(fetchMock.lastOptions('*').headers).to.deep.equal({
-							...defaultHeaders,
-							...optsHeaders,
-							'Content-Length': 0
-						});
+					expect(fetchMock.lastOptions(apiRootMatcher).headers).to.deep.equal({
+						...defaultHeaders,
+						...optsHeaders,
+						'Content-Length': 0
 					});
 				});
 
 			});
 		});
 
-		describe('getConceptsFromReadingHistory', function () {
-			it('should pass function opts header to the API calls', () => {
-				myFtApi = new MyFtApi({
-					apiRoot,
-					headers: optsHeaders
-				});
-				return myFtApi.getConceptsFromReadingHistory(userId, 10, {}, functionOptsHeaders).then(() => {
-					expect(fetchMock.lastOptions('*').headers).to.deep.equal({
-						...defaultHeaders,
-						...optsHeaders,
-						...functionOptsHeaders,
-						'ft-user-uuid': userId
-					});
+		describe('getConceptsFromReadingHistory', () => {
+			it('should pass function opts header to the API calls', async () => {
+				myFtApi = new MyFtApi({ apiRoot, headers: optsHeaders });
+				await myFtApi.getConceptsFromReadingHistory(userId, 10, {}, functionOptsHeaders);
+
+				expect(fetchMock.lastOptions(apiRootMatcher).headers).to.deep.equal({
+					...defaultHeaders,
+					...optsHeaders,
+					...functionOptsHeaders,
+					'ft-user-uuid': userId
 				});
 			});
 		});
 
-		describe('getArticlesFromReadingHistory', function () {
-			it('should pass function opts header to the API calls', () => {
-				myFtApi = new MyFtApi({
-					apiRoot,
-					headers: optsHeaders
-				});
-				return myFtApi.getArticlesFromReadingHistory(userId, -7, {}, functionOptsHeaders).then(() => {
-					expect(fetchMock.lastOptions('*').headers).to.deep.equal({
-						...defaultHeaders,
-						...optsHeaders,
-						...functionOptsHeaders,
-						'ft-user-uuid': userId
-					});
+		describe('getArticlesFromReadingHistory', () =>{
+			it('should pass function opts header to the API calls', async () => {
+				myFtApi = new MyFtApi({ apiRoot, headers: optsHeaders });
+				await myFtApi.getArticlesFromReadingHistory(userId, -7, {}, functionOptsHeaders);
+
+				expect(fetchMock.lastOptions(apiRootMatcher).headers).to.deep.equal({
+					...defaultHeaders,
+					...optsHeaders,
+					...functionOptsHeaders,
+					'ft-user-uuid': userId
 				});
 			});
 		});
 
-		describe('getUserLastSeenTimestamp', function () {
-			it('should pass function opts header to the API calls', () => {
-				myFtApi = new MyFtApi({
-					apiRoot,
-					headers: optsHeaders
-				});
-				return myFtApi.getUserLastSeenTimestamp(userId, { headers: functionOptsHeaders }).then(() => {
-					expect(fetchMock.lastOptions('*').headers).to.deep.equal({
-						...defaultHeaders,
-						...optsHeaders,
-						...functionOptsHeaders,
-						'ft-user-uuid': userId
-					});
+		describe('getUserLastSeenTimestamp', () => {
+			it('should pass function opts header to the API calls', async () => {
+				myFtApi = new MyFtApi({ apiRoot, headers: optsHeaders });
+				await myFtApi.getUserLastSeenTimestamp(userId, { headers: functionOptsHeaders });
+
+				expect(fetchMock.lastOptions(apiRootMatcher).headers).to.deep.equal({
+					...defaultHeaders,
+					...optsHeaders,
+					...functionOptsHeaders,
+					'ft-user-uuid': userId
 				});
 			});
 		});
@@ -286,10 +264,8 @@ describe('myFT node API', () => {
 
 
 			it('should set headers when it is provided', () => {
-				myFtApi = new MyFtApi({
-					apiRoot,
-					headers: optsHeaders
-				});
+				myFtApi = new MyFtApi({ apiRoot, headers: optsHeaders });
+
 				expect(myFtApi.headers).to.deep.equal({
 					...defaultHeaders,
 					...optsHeaders,
@@ -297,14 +273,13 @@ describe('myFT node API', () => {
 				});
 			});
 
-			it('should pass a flag to bypass maintenance mode', () => {
+			it('should pass a flag to bypass maintenance mode', async () => {
 				myFtApi = new MyFtApi({ apiRoot });
+				await myFtApi.getAllRelationship('user', userId, 'followed', 'concept');
 
-				return myFtApi.getAllRelationship('user', userId, 'followed', 'concept').then(() => {
-					expect(fetchMock.lastOptions('*').headers).to.deep.equal({
-						...defaultHeaders,
-						...bypassMyftMaintenanceHeader
-					});
+				expect(fetchMock.lastOptions(apiRootMatcher).headers).to.deep.equal({
+					...defaultHeaders,
+					...bypassMyftMaintenanceHeader
 				});
 			});
 
