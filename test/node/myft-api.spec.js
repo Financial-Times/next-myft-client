@@ -103,14 +103,20 @@ describe('myFT node API', () => {
 			});
 		});
 
-		it('should throw errors when api returns 404', (done) => {
+		it('should throw errors when api returns 404', async () => {
 			const endpoint = `endpoint/${userId}`;
-			fetchMock.mock('https://test-api-route.com/endpoint/00000000-0000-0000-0000-000000000001', 404);
-			myFtApi.fetchJson('GET', endpoint)
-				.catch(err => {
-					expect(err).to.deep.equal(new Error('Request must not contain undefined. Invalid path: ' + endpoint));
-					done();
-				});
+			fetchMock.restore();
+			const readable = new fetchMock.stream.Readable();
+			readable.push('response string');
+			readable.push(null);
+
+			fetchMock.mock('https://test-api-route.com/endpoint/00000000-0000-0000-0000-000000000001', { status: 404, body: readable, sendAsJson: false });
+			try {
+				await myFtApi.fetchJson('GET', endpoint)
+				throw new Error(`Expected error didn't throw!`)
+			} catch (err) {
+				expect(err).to.deep.equal(new Error('No user data exists'));
+			}
 		});
 	});
 
