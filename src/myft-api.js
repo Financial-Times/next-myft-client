@@ -14,7 +14,7 @@ const defaultHeaders = {
 };
 
 const envHeaders = {};
-if (process.env.BYPASS_MYFT_MAINTENANCE_MODE) {
+if (process.env.BYPASS_MYFT_MAINTENANCE_MODE === 'true') {
 	envHeaders['ft-bypass-myft-maintenance-mode'] = 'true';
 }
 

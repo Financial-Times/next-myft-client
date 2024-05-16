@@ -18,27 +18,27 @@ describe('myFT node API', () => {
 	const defaultHeaders = { 'Content-Type': 'application/json' };
 	const endpoint = `user/${userId}`;
 
-	afterEach(function () {
+	afterEach(() => {
 		fetchMock.reset();
 	});
 
 	describe('Library functions', () => {
-		describe('url personalising', function () {
-			it('should be possible to personalise a url', function () {
+		describe('url personalising', () => {
+			it('should be possible to personalise a url', () => {
 				expect(myFtApi.personaliseUrl('/myft', userId)).to.equal(`/myft/${userId}`);
 				expect(myFtApi.personaliseUrl(`/myft/${userId}`, userId)).to.equal(`/myft/${userId}`);
 			});
 		});
 
-		describe('identifying personalised URLs', function () {
-			it('should identify between personalised urls and not personalised urls', function () {
+		describe('identifying personalised URLs', () => {
+			it('should identify between personalised urls and not personalised urls', () => {
 				expect(myFtApi.isPersonalisedUrl(`/myft/${userId}`)).to.be.true;
 				expect(myFtApi.isPersonalisedUrl('/myft/following/')).to.be.false;
 			});
 		});
 
-		describe('identifying immutable URLs', function () {
-			it('should identify between immutable urls and mutable urls', function () {
+		describe('identifying immutable URLs', () => {
+			it('should identify between immutable urls and mutable urls', () => {
 				expect(myFtApi.isImmutableUrl(`/myft/${userId}`)).to.be.true;
 				expect(myFtApi.isImmutableUrl('/myft/following/')).to.be.false;
 			});
@@ -162,14 +162,14 @@ describe('myFT node API', () => {
 
 				const originalNodeEnv = process.env.NODE_ENV;
 
-				beforeEach(function () {
+				before(() => {
 					process.env.NODE_ENV = 'production';
 
 					delete require.cache[require.resolve('../../src/myft-api')];
 					MyFtApi = require('../../src/myft-api');
 				});
 
-				afterEach(function () {
+				after(() => {
 					process.env.NODE_ENV = originalNodeEnv;
 				});
 
@@ -245,17 +245,17 @@ describe('myFT node API', () => {
 
 		describe('when BYPASS_MYFT_MAINTENANCE_MODE flag is set', () => {
 
-			let originalBypassMaintenanceMode = process.env.BYPASS_MYFT_MAINTENANCE_MODE;
+			const originalBypassMaintenanceMode = process.env.BYPASS_MYFT_MAINTENANCE_MODE;
 			const bypassMyftMaintenanceHeader = { 'ft-bypass-myft-maintenance-mode': 'true' };
 
-			beforeEach(function () {
+			before(() => {
 				process.env.BYPASS_MYFT_MAINTENANCE_MODE = true;
 
 				delete require.cache[require.resolve('../../src/myft-api')];
 				MyFtApi = require('../../src/myft-api');
 			});
 
-			afterEach(function () {
+			after(() => {
 				process.env.BYPASS_MYFT_MAINTENANCE_MODE = originalBypassMaintenanceMode;
 			});
 
