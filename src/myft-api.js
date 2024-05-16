@@ -14,7 +14,7 @@ const defaultHeaders = {
 };
 
 const envHeaders = {};
-if (process.env.BYPASS_MYFT_MAINTENANCE_MODE) {
+if (process.env.BYPASS_MYFT_MAINTENANCE_MODE === 'true') {
 	envHeaders['ft-bypass-myft-maintenance-mode'] = 'true';
 }
 
@@ -36,14 +36,18 @@ class MyFtApi {
 		opts = opts || {};
 
 		let queryString = '';
-		let options = Object.assign({
+
+		const headers = {
+			...this.headers,
+			...opts.headers
+		};
+
+		let options = {
 			method,
-			credentials: 'include'
-		},
-		opts,
-		{
-			headers: this.headers
-		});
+			credentials: 'include',
+			...opts,
+			headers
+		};
 
 		if (/undefined/.test(endpoint)) {
 			return Promise.reject(new Error('Request must not contain undefined. Invalid path: ' + endpoint));
@@ -56,12 +60,10 @@ class MyFtApi {
 
 			// fiddle content length header to appease Fastly
 			if (process.env.NODE_ENV === 'production') {
-
 				// Fastly requires that empty requests have an empty object for a body and local API requires that
 				// they don't
 				options.body = JSON.stringify(data || {});
-
-				this.headers['Content-Length'] = Buffer.byteLength(options.body);
+				options.headers['Content-Length'] = Buffer.byteLength(options.body);
 
 			} else {
 				options.body = data ? JSON.stringify(data) : null;
@@ -69,7 +71,7 @@ class MyFtApi {
 		} else {
 
 			if (process.env.NODE_ENV === 'production') {
-				this.headers['Content-Length'] = 0;
+				options.headers['Content-Length'] = 0;
 			}
 
 			Object.keys(data || {}).forEach(function (key) {
@@ -137,30 +139,29 @@ class MyFtApi {
 	}
 
 	getConceptsFromReadingHistory (userUuid, limit, opts = {}, overrideHeaders = {}) {
-		const headers = Object.assign(this.headers,
-			{
-				'ft-user-uuid': userUuid
-			}, overrideHeaders);
-
-		return this.fetchJson('GET', `next/user/${userUuid}/history/topics?limit=${limit}`, null, Object.assign(opts, { headers }));
+		const optsModified = {
+			...opts,
+			headers: { 'ft-user-uuid': userUuid, ...overrideHeaders }
+		};
+		return this.fetchJson('GET', `next/user/${userUuid}/history/topics?limit=${limit}`, null, optsModified);
 	}
 
 	getArticlesFromReadingHistory (userUuid, daysBack = -7, opts = {}, overrideHeaders = {}) {
-		const headers = Object.assign(this.headers,
-			{
-				'ft-user-uuid': userUuid
-			}, overrideHeaders);
-
-		return this.fetchJson('GET', `next/user/${userUuid}/history/articles?limit=${daysBack}`, null, Object.assign({ timeout: 3000 }, opts, { headers }));
+		const optsModified = {
+			timeout: 3000,
+			...opts,
+			headers: { 'ft-user-uuid': userUuid, ...overrideHeaders }
+		};
+		return this.fetchJson('GET', `next/user/${userUuid}/history/articles?limit=${daysBack}`, null, optsModified);
 	}
 
 	getUserLastSeenTimestamp (userUuid, opts = {}) {
-		const headers = Object.assign(this.headers,
-			{
-				'ft-user-uuid': userUuid
-			});
-
-		return this.fetchJson('GET', `next/user/${userUuid}/last-seen`, null, Object.assign({ timeout: 3000 }, opts, { headers }));
+		const optsModified = {
+			timeout: 3000,
+			...opts,
+			headers: { 'ft-user-uuid': userUuid, ...opts.headers }
+		};
+		return this.fetchJson('GET', `next/user/${userUuid}/last-seen`, null, optsModified);
 	}
 
 	personaliseUrl (url, uuid) {
