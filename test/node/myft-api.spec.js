@@ -282,5 +282,59 @@ describe('myFT node API', () => {
 			});
 
 		});
+
+		describe('when SYSTEM_CODE is provided', () => {
+
+			const systemCode = 'system-a';
+			const originSystemHeader = { 'x-origin-system-id': systemCode };
+
+			before(() => {
+				process.env.SYSTEM_CODE = systemCode;
+
+				delete require.cache[require.resolve('../../src/myft-api')];
+				MyFtApi = require('../../src/myft-api');
+			});
+
+			after(() => {
+				delete process.env['SYSTEM_CODE'];
+			});
+
+
+			it('should set headers when it is provided', () => {
+				myFtApi = new MyFtApi({ apiRoot, headers: optsHeaders });
+
+				expect(myFtApi.headers).to.deep.equal({
+					...defaultHeaders,
+					...optsHeaders,
+					...originSystemHeader
+				});
+			});
+
+			it('should pass the header to the API request', async () => {
+				myFtApi = new MyFtApi({ apiRoot });
+				await myFtApi.getAllRelationship('user', userId, 'followed', 'concept', {}, { headers: functionOptsHeaders });
+
+				expect(fetchMock.lastOptions(apiRootMatcher).headers).to.deep.equal({
+					...defaultHeaders,
+					...functionOptsHeaders,
+					...originSystemHeader
+				});
+			});
+
+			it('should overwrite the header if function option pass x-origin-system-id header', async () => {
+				const overwriteHeaders = { 'x-origin-system-id': 'system-b' };
+				myFtApi = new MyFtApi({ apiRoot });
+				await myFtApi.getAllRelationship('user', userId, 'followed', 'concept', {}, { headers: overwriteHeaders });
+
+				expect(fetchMock.lastOptions(apiRootMatcher).headers).not.to.contains({
+					...functionOptsHeaders
+				});
+				expect(fetchMock.lastOptions(apiRootMatcher).headers).to.deep.equal({
+					...defaultHeaders,
+					...overwriteHeaders
+				});
+			});
+
+		});
 	});
 });
