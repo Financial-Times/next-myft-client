@@ -7,7 +7,7 @@
   "dependencies": {
     "black-hole-stream": "0.0.1",
     "fetchres": "^1.7.2",
-    "next-session-client": "^4.0.0"
+    "next-session-client": "^5.0.0"
   },
   "devDependencies": {
     "@dotcom-tool-kit/component": "^4.1.3",
