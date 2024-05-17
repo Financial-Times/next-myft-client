@@ -18,6 +18,10 @@ if (process.env.BYPASS_MYFT_MAINTENANCE_MODE === 'true') {
 	envHeaders['ft-bypass-myft-maintenance-mode'] = 'true';
 }
 
+if(process.env.SYSTEM_CODE) {
+	envHeaders['x-origin-system-id'] = process.env.SYSTEM_CODE;
+}
+
 class MyFtApi {
 	constructor (opts) {
 		if (!opts.apiRoot) {
